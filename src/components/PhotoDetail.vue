@@ -2,7 +2,7 @@
   <el-row>
     <el-col :span="12">
       <div >
-        <el-image style="width: 500px;height: 600px;" :src="imgData.url" :preview-src-list="[imgData.url]"></el-image>
+        <el-image style="width: 500px;height: 600px;" :src="imgData.urls.regular" fit="contain" :preview-src-list="[imgData.urls.original]"></el-image>
       </div>
     </el-col>
     <el-col :span="12">

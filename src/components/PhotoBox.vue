@@ -7,7 +7,7 @@
       <el-row >
         <div class="wrapper">
           <el-image :hide-on-click-modal="true" :key="index" fit="contain" v-for="(item, index) in pictures " style="width: 240px;height: 160px;"
-                    :src="item.url" @click="openImageDetailBox(item)">
+                    :src="item.urls.mini" @click="openImageDetailBox(item)">
             <template #error>
               <div class="image-slot">
                 <i class="el-icon-picture-outline"></i>
