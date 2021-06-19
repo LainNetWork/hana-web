@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div >
     <el-button @click="openUploadBox">上传<i class="el-icon-upload el-icon--right"></i></el-button>
     <el-dialog
         title="新增图片"
@@ -27,7 +27,11 @@
             <el-form-item label="图片标题:">
               <el-input v-model="form.title"></el-input>
             </el-form-item>
-            <el-form-item label="pid:">
+            <el-form-item>
+              <template #label>
+                pid:
+                <el-button @click="searchPixivByPid(form.pid)" type="text" icon="el-icon-search"/>
+              </template>
               <el-input v-model="form.pid"></el-input>
             </el-form-item>
             <el-form-item label="图片作者:">
@@ -78,6 +82,7 @@
 </template>
 
 <script>
+import searchPixivByPid from "../../api/pixiv";
 export default {
   name: "ImageUploader",
   data(){
@@ -100,6 +105,10 @@ export default {
       realFileList:[],
     }
   },methods: {
+    async searchPixivByPid(pid){
+      const { data } = await searchPixivByPid(pid)
+      this.form = data
+    },
     showPreview(val){
       this.showUploadPreview = true
       this.uploadPreviewUrl = val.url
@@ -120,6 +129,7 @@ export default {
       }
     },
     fileChange(file,fileList){
+      console.log(fileList)
       this.realFileList = fileList
     },
     clearSelectedImages(){

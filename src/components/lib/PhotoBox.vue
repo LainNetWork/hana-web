@@ -16,7 +16,7 @@
           </el-image>
         </div>
       </el-row>
-      <el-dialog v-model="showDetailBox">
+      <el-dialog v-model="showDetailBox" width="600px">
         <PhotoDetail :imgData="showDetailBoxData" />
       </el-dialog>
     </el-main>
@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import fetchImageList from "../api/image";
+import fetchImageList from "../../api/image";
 import PhotoDetail from "./PhotoDetail.vue";
 export default {
   name: "PhotoBox",

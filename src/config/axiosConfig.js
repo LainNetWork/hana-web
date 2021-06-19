@@ -9,8 +9,9 @@ $http.interceptors.request.use((config) =>{
 
 $http.interceptors.response.use((response) =>{
     let ok = response.data.isOk;
+    console.log(ok)
     if(!ok) {
-        ElMessage.error("服务出错：" + response.data.msg)
+        ElMessage.error(response.data.msg)
     }
     return response.data
 },(error) => {
