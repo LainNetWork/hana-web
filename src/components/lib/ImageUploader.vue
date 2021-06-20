@@ -43,7 +43,7 @@
             <el-form-item label="存储方式:">
               <el-select v-model="form.storageType">
                 <el-option value="LOCAL" label="本地存储"></el-option>
-                <el-option value="QINIU" label="七牛云OSS"></el-option>
+                <el-option value="TENXUN" label="腾讯云COS"></el-option>
                 <el-option value="ALIYUN" label="阿里云OSS"></el-option>
               </el-select>
             </el-form-item>

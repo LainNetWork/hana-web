@@ -1,15 +1,22 @@
 <template>
   <div style="margin: 10px">
-    <PhotoBox/>
+    <PhotoBox :fetch-img-func="fetchImageList">
+      <image-uploader/>
+    </PhotoBox>
   </div>
 </template>
 
 <script>
-import PhotoBox from "../../components/lib/PhotoBox.vue";
+import fetchImageList from "../../api/image";
+import PhotoBox from "../../components/lib/PhotoBox";
+import ImageUploader from '../../components/lib/ImageUploader'
 export default {
   name: "HomePage",
   components:{
-    PhotoBox
+    PhotoBox,
+    ImageUploader
+  },setup(){
+    return {fetchImageList}
   }
 }
 </script>

@@ -1,40 +1,22 @@
 <template>
   <el-row style="height: 100%">
     <el-col :span="menuSpan" style="height: 100%">
-      <el-menu style="height: 100%" default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :collapse="isCollapse">
+      <el-menu router style="height: 100%" :default-active="this.$route.path" class="el-menu-vertical-demo" :collapse="isCollapse">
         <div :class="isCollapse?'isCollapse':'notCollapse'">
-          <div :style="collapseStyle">chi</div>
-          <el-button style="width: 20px;justify-content: flex-end" type="text" :icon="isCollapse?'el-icon-arrow-right':'el-icon-arrow-left'" @click="isCollapse = !isCollapse"></el-button>
+          <div :style="collapseStyle">Hana Logo</div>
+          <el-button style="width: 20px;height: 70px;justify-content: flex-end" type="text" :icon="isCollapse?'el-icon-arrow-right':'el-icon-arrow-left'" @click="isCollapse = !isCollapse"></el-button>
         </div>
-        <el-submenu index="1">
-          <template #title>
-            <i class="el-icon-location"></i>
-            <span>导航一</span>
-          </template>
-          <el-menu-item-group>
-            <template #title>分组一</template>
-            <el-menu-item index="1-1">选项1</el-menu-item>
-            <el-menu-item index="1-2">选项2</el-menu-item>
-          </el-menu-item-group>
-          <el-menu-item-group title="分组2">
-            <el-menu-item index="1-3">选项3</el-menu-item>
-          </el-menu-item-group>
-          <el-submenu index="1-4">
-            <template #title>选项4</template>
-            <el-menu-item index="1-4-1">选项1</el-menu-item>
-          </el-submenu>
-        </el-submenu>
-        <el-menu-item index="2">
-          <i class="el-icon-menu"></i>
-          <template #title>导航二</template>
+        <el-menu-item index="/">
+          <i class="el-icon-picture-outline-round"></i>
+          <template #title>图库</template>
         </el-menu-item>
-        <el-menu-item index="3" disabled>
-          <i class="el-icon-document"></i>
-          <template #title>导航三</template>
+        <el-menu-item index="/collection">
+          <i class="el-icon-star-on"></i>
+          <template #title>我的收藏</template>
         </el-menu-item>
-        <el-menu-item index="4">
+        <el-menu-item index="/config">
           <i class="el-icon-setting"></i>
-          <template #title>导航四</template>
+          <template #title>系统设置</template>
         </el-menu-item>
       </el-menu>
     </el-col>
@@ -45,8 +27,13 @@
 </template>
 
 <script>
+import Config from './components/admin/Config'
+import {computed} from "vue";
 export default {
   name: "App",
+  components:{
+    Config
+  },
   data() {
     return {
       collapseStyle:{
@@ -57,6 +44,15 @@ export default {
       menuSpan:3,
       mainSpan:21
     };
+  },
+  provide (){
+    return {
+      isCollapse: computed(()=>{
+        return {
+          isCollapse:this.isCollapse
+        }
+      })
+    }
   },
   watch:{
     isCollapse(val){
@@ -72,12 +68,6 @@ export default {
     }
   },
   methods: {
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
-    }
   }
 }
 </script>
@@ -88,12 +78,12 @@ html ,body, #app{
 }
 .isCollapse{
   display: inline-block;
-  height: 60px;
+  height: 70px;
   width: 80px;
 }
 .notCollapse{
   display: inline-block;
-  height: 60px;
+  height: 70px;
   width: 220px;
 }
 </style>

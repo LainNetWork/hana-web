@@ -15,6 +15,7 @@ $http.interceptors.response.use((response) =>{
     }
     return response.data
 },(error) => {
+    ElMessage.error("请求服务器异常！")
     return Promise.reject(error)
 })
 

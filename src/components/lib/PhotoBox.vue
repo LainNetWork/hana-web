@@ -2,8 +2,11 @@
   <el-container>
     <el-header>
       <el-input placeholder="搜索画作" style="width: 500px" v-model="imageForm.keyWord" @keypress="keyPressSearch"/>
+      <div style="display: inline-block;margin-left: 100px">
+        <slot></slot>
+      </div>
     </el-header>
-    <el-main>
+    <el-main style="padding-left: 0;padding-right: 0">
       <el-row >
         <div class="wrapper">
           <el-image :hide-on-click-modal="true" :key="index" fit="contain" v-for="(item, index) in pictures " style="width: 240px;height: 160px;"
@@ -35,11 +38,16 @@
 </template>
 
 <script>
-import fetchImageList from "../../api/image";
-import PhotoDetail from "./PhotoDetail.vue";
+import PhotoDetail from "./PhotoDetail";
 export default {
   name: "PhotoBox",
   components: {PhotoDetail},
+  props:{
+    fetchImgFunc:{
+      type:Function,
+      required:true
+    }
+  },
   data(){
     return {
       showImageDetail:false,
@@ -47,7 +55,7 @@ export default {
       showDetailBoxData:{},
       imageForm:{
         keyWord:"",
-        pageSize:28,
+        pageSize:24,
         pageNum:1,
         total:0
       },
@@ -56,6 +64,17 @@ export default {
   },
   created() {
     this.fetchImageList()
+  },
+  inject:['isCollapse'],
+  watch:{
+    isCollapse:{
+      immediate: true,
+      deep: true,
+      handler(){
+        console.log("test")
+        this.fetchImageList()
+      }
+    }
   },
   methods:{
     openImageDetailBox(item){
@@ -67,7 +86,13 @@ export default {
       await this.fetchImageList()
     },
     async fetchImageList(){
-      const { data } = await fetchImageList(this.imageForm)
+      console.log("测试",this.isCollapse.value)
+      if (this.isCollapse.value.isCollapse) {
+        this.imageForm.pageSize=28
+      }else {
+        this.imageForm.pageSize=24
+      }
+      const { data } = await this.fetchImgFunc(this.imageForm)
       this.pictures = data.content
       this.imageForm.total = data.total
     },

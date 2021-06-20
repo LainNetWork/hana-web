@@ -1,10 +1,10 @@
 <template>
-设置
+
 </template>
 
 <script>
 export default {
-  name: "Config"
+  name: "Collection"
 }
 </script>
 
