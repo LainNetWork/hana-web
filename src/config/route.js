@@ -1,25 +1,38 @@
-import HomePage from "../components/admin/HomePage";
+import Gallery from "../components/admin/Gallery"
 import Config from  "../components/admin/Config"
 import Collection from  "../components/admin/Collection"
 import Login from  "../components/admin/Login"
+import NotFound from  "../components/admin/NotFound"
+import Index from  "../components/admin/Index"
+
 import * as VueRouter from 'vue-router';
 
 const routes = [
     {
         path: "/",
-        component: HomePage
+        component: Index,
+        children:[
+            {
+                path: "/gallery",
+                component: Gallery
+            },
+            {
+                path: "/collection",
+                component: Collection
+            },
+            {
+                path: "/config",
+                component: Config
+            },
+        ]
     },
     {
-        path: "/collection",
-        component: Collection
-    },
-    {
-        path: "/config",
-        component: Config
-    },
-    {
-        path: "/login",
+        path: "/system",
         component: Login
+    },
+    {
+        path: "/404",
+        component: NotFound
     }
 ]
 const router = VueRouter.createRouter({

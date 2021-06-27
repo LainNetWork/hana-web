@@ -14,6 +14,7 @@ $http.interceptors.response.use((response) =>{
     console.log(ok)
     if(!ok) {
         ElMessage.error(response.data.msg)
+        return Promise.reject(response)
     }
     return response.data
 },(error) => {
@@ -24,7 +25,7 @@ $http.interceptors.response.use((response) =>{
     }
     if (response.status === 401) {
         ElMessage.error(response.data.msg)
-        router.push("/login")
+        router.push("/system")
     }else {
         ElMessage.error("请求服务器异常！")
     }

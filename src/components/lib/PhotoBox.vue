@@ -71,7 +71,6 @@ export default {
       immediate: true,
       deep: true,
       handler(){
-        console.log("test")
         this.fetchImageList()
       }
     }

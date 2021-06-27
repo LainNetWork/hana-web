@@ -6,12 +6,12 @@
     <el-form-item label="系统BaseUrl: ">
       <el-input v-model="config.projectBaseUrl"></el-input>
     </el-form-item>
-    <el-form-item label="系统管理员账号: ">
-      <el-input v-model="config.adminAccount"></el-input>
-    </el-form-item>
-    <el-form-item label="系统管理员密码: ">
-      <el-input v-model="config.adminPassword"></el-input>
-    </el-form-item>
+<!--    <el-form-item label="系统管理员账号: ">-->
+<!--      <el-input v-model="config.adminAccount"></el-input>-->
+<!--    </el-form-item>-->
+<!--    <el-form-item label="系统管理员密码: ">-->
+<!--      <el-input v-model="config.adminPassword"></el-input>-->
+<!--    </el-form-item>-->
 
     <el-divider content-position="left" >
       <p style="font-weight: bold">Pixiv相关设置</p>
@@ -30,17 +30,21 @@
       <el-input v-model="config.tencentOssBaseUrl"></el-input>
     </el-form-item>
     <el-form-item label="腾讯云COS Secret Id: ">
-      <el-input v-model="config.tencentOssSecretId"></el-input>
+      <el-input v-model="config.tencentOssSecretID"></el-input>
     </el-form-item>
     <el-form-item label="腾讯云COS Secret Key: ">
       <el-input v-model="config.tencentOssSecretKey"></el-input>
     </el-form-item>
-
+    <el-form-item>
+      <el-button type="primary" @click="saveSystemConfig()">保存</el-button>
+    </el-form-item>
   </el-form>
 </template>
 
 <script>
-import {reactive, toRefs} from 'vue'
+import {reactive, toRefs,onMounted} from 'vue'
+import { fetchSystemConfig,saveConfig } from '../../api/system'
+import {ElMessage} from "element-plus";
 export default {
   name: "Config",
   setup(){
@@ -52,13 +56,24 @@ export default {
         adminAccount:'',
         adminPassword:'',
         tencentOssBaseUrl:'',
-        tencentOssSecretId:'',
+        tencentOssSecretID:'',
         tencentOssSecretKey:'',
       }
     })
-
+    const getSysConfig = async ()=>{
+      const { data } = await fetchSystemConfig()
+      state.config = data
+    }
+    onMounted(()=>{
+      getSysConfig()
+    })
+    const saveSystemConfig = async ()=>{
+      await saveConfig(state.config)
+      ElMessage.success("保存成功！")
+    }
     return {
-      ...toRefs(state)
+      ...toRefs(state),
+      saveSystemConfig
     }
   }
 }
