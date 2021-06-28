@@ -1,21 +1,31 @@
-version: 4
+version: 6
 jobs:
 - name: build static web
-  image: node:16.3.0
-  commands:
-  - git clone https://git.lain.fun/hana-web
-  - '# npm config set registry https://registry.npm.taobao.org'
-  - '# npm config get registry'
-  - cd hana-web
-  - ls
-  - npm install
-  - npm run build
-  - ls
-  retrieveSource: true
-  cloneCredential: !DefaultCredential {}
-  cpuRequirement: 250m
-  memoryRequirement: 128m
+  steps:
+  - !CheckoutStep
+    name: checkout
+    cloneCredential: !DefaultCredential {}
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !CommandStep
+    name: command
+    image: node:16.3.0
+    commands:
+    - git clone https://git.lain.fun/hana-web
+    - '# npm config set registry https://registry.npm.taobao.org'
+    - '# npm config get registry'
+    - cd hana-web
+    - ls
+    - npm install
+    - npm run build
+    - ls
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !PublishArtifactStep
+    name: publish Artifacts
+    artifacts: hana-web/dist/
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   retryCondition: never
   maxRetries: 3
   retryDelay: 30
+  cpuRequirement: 250m
+  memoryRequirement: 128m
   timeout: 3600
