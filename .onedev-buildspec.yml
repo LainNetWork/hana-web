@@ -1,0 +1,26 @@
+version: 8
+jobs:
+- name: build static web
+  steps:
+  - !CheckoutStep
+    name: checkout
+    cloneCredential: !DefaultCredential {}
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !CommandStep
+    name: command
+    image: node:16.3.0
+    commands:
+    - npm install
+    - npm run build
+    - ls
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !PublishArtifactStep
+    name: publish Artifacts
+    artifacts: dist/
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  cpuRequirement: 250m
+  memoryRequirement: 128m
+  timeout: 3600
