@@ -27,7 +27,7 @@ export default {
     })
     const loginFunc = async ()=>{
       await login(state.account,state.password)
-      router.push("/gallery")
+      router.push("/")
     }
     return {
       ...toRefs(state),

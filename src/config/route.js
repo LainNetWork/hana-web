@@ -13,7 +13,7 @@ const routes = [
         component: Index,
         children:[
             {
-                path: "/gallery",
+                path: "/",
                 component: Gallery
             },
             {

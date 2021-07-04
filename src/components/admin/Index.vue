@@ -1,13 +1,13 @@
 <template>
   <el-row style="height: 100%">
     <el-col :span="menuSpan" style="height: 100%">
-      <el-menu router style="height: 100%" :default-active="this.$route.path" :collapse="isCollapse">
+      <el-menu router style="height: 100%" :collapse="isCollapse">
 <!--        <div :class="isCollapse?'isCollapse':'notCollapse'">-->
 <!--          <div :style="collapseStyle">-->
 <!--            <img v-if="isCollapse" style="width: 50px;margin: auto" src="/logo.png" alt="Logo">-->
 <!--          </div>-->
 <!--        </div>-->
-        <el-menu-item index="/gallery">
+        <el-menu-item index="/">
           <i class="el-icon-picture-outline-round"></i>
           <template #title>图库</template>
         </el-menu-item>
