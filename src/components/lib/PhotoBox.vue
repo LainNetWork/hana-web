@@ -85,7 +85,6 @@ export default {
       await this.fetchImageList()
     },
     async fetchImageList(){
-      console.log("测试",this.isCollapse.value)
       if (this.isCollapse.value.isCollapse) {
         this.imageForm.pageSize=28
       }else {

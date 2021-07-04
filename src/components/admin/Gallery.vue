@@ -1,7 +1,7 @@
 <template>
   <div style="margin: 10px">
-    <PhotoBox :fetch-img-func="fetchImageList">
-      <image-uploader/>
+    <PhotoBox ref="picBox" :fetch-img-func="fetchImageList">
+      <image-uploader v-on:OnClose="imgUploadClose"/>
     </PhotoBox>
   </div>
 </template>
@@ -17,6 +17,10 @@ export default {
     ImageUploader
   },setup(){
     return {fetchImageList}
+  },methods:{
+    imgUploadClose(){
+      this.$refs["picBox"].fetchImageList()
+    }
   }
 }
 </script>

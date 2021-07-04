@@ -5,6 +5,7 @@
         title="新增图片"
         v-model="showUploadBox"
         :show-close="true"
+        @closed="onclose"
         width="900px">
       <el-row type="flex" justify="space-around">
         <div style="width: 500px;height: 600px;overflow-y: scroll;">
@@ -47,25 +48,27 @@
               </el-select>
             </el-form-item>
             <el-form-item label="图片标签:">
-              <el-tag style="margin: 2px"
-                      :key="tag"
-                      v-for="tag in form.tags"
-                      closable
-                      :disable-transitions="false"
-                      @close="handleClose(tag)">
-                {{ tag }}
-              </el-tag>
-              <el-input
-                  class="input-new-tag"
-                  v-if="inputVisible"
-                  v-model="inputValue"
-                  ref="saveTagInput"
-                  size="small"
-                  @keyup.enter.native="handleInputConfirm"
-                  @blur="handleInputConfirm"
-              >
-              </el-input>
-              <el-button v-else class="button-new-tag" size="small" @click="showInput">+</el-button>
+              <div style="height: 100px;overflow-y: scroll">
+                <el-tag style="margin: 2px"
+                        :key="tag"
+                        v-for="tag in form.tags"
+                        closable
+                        :disable-transitions="false"
+                        @close="handleClose(tag)">
+                  {{ tag }}
+                </el-tag>
+                <el-input
+                    class="input-new-tag"
+                    v-if="inputVisible"
+                    v-model="inputValue"
+                    ref="saveTagInput"
+                    size="small"
+                    @keyup.enter.native="handleInputConfirm"
+                    @blur="handleInputConfirm"
+                >
+                </el-input>
+                <el-button v-else class="button-new-tag" size="small" @click="showInput">+</el-button>
+              </div>
             </el-form-item>
           </el-form>
         </div>
@@ -84,6 +87,7 @@
 import searchPixivByPid from "../../api/pixiv";
 export default {
   name: "ImageUploader",
+  emits:["OnClose"],
   data(){
     return {
       form:{
@@ -104,9 +108,13 @@ export default {
       realFileList:[],
     }
   },methods: {
+    onclose(){
+      this.$emit("OnClose")
+    },
     async searchPixivByPid(pid){
       const { data } = await searchPixivByPid(pid)
       this.form = data
+      this.form.storageType = "TENXUN"
     },
     showPreview(val){
       this.showUploadPreview = true
@@ -165,7 +173,6 @@ export default {
         this.$refs.saveTagInput.$refs.input.focus();
       });
     },
-
     handleInputConfirm() {
       let inputValue = this.inputValue;
       if (inputValue) {
