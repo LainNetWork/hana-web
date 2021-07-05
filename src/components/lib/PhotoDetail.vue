@@ -12,7 +12,7 @@
           <template #label>
             <p>图片标题:</p>
           </template>
-          <p style="white-space:nowrap">{{ imageData.title }}</p>
+          <p>{{ imageData.title }}</p>
         </el-descriptions-item>
         <el-descriptions-item label="pid:">
           <p style="white-space:nowrap">{{ imageData.pid }}</p>
@@ -53,16 +53,28 @@
           </template>
           <el-input v-model="imageForm.title"/>
         </el-descriptions-item>
-        <el-descriptions-item label="pid:">
-          <el-input style="white-space:nowrap" v-model="imageForm.pid"/>
+        <el-descriptions-item>
+          <template #label>
+            <p style="white-space:nowrap">pid:</p>
+          </template>
+          <el-input v-model="imageForm.pid"/>
         </el-descriptions-item>
-        <el-descriptions-item label="图片作者:">
-          <el-input style="white-space:nowrap" v-model="imageForm.author"/>
+        <el-descriptions-item>
+          <template #label>
+            <p style="white-space:nowrap">图片作者:</p>
+          </template>
+          <el-input  v-model="imageForm.author"/>
         </el-descriptions-item>
-        <el-descriptions-item label="作者id:">
-          <el-input style="white-space:nowrap" v-model="imageForm.authorId"/>
+        <el-descriptions-item>
+          <template #label>
+            <p style="white-space:nowrap">作者id:</p>
+          </template>
+          <el-input  v-model="imageForm.authorId"/>
         </el-descriptions-item>
-        <el-descriptions-item label="图片标签:">
+        <el-descriptions-item>
+          <template #label>
+            <p style="white-space:nowrap">图片标签:</p>
+          </template>
           <div style="height: 100px;overflow-y: scroll">
             <el-tag style="margin: 2px"
                     :key="tag"
