@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import fetchImageList from "../../api/image";
+import { fetchImageList } from "../../api/image";
 import PhotoBox from "../../components/lib/PhotoBox";
 import ImageUploader from '../../components/lib/ImageUploader'
 export default {

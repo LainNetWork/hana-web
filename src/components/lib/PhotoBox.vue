@@ -10,7 +10,7 @@
       <el-row >
         <div class="wrapper">
           <el-image :hide-on-click-modal="true" :key="index" fit="contain" v-for="(item, index) in pictures " style="width: 240px;height: 160px;"
-                    :src="item.urls.mini" @click="openImageDetailBox(item)">
+                    :src="item.urls.mini" @click="openImageDetailBox(item.id)">
             <template #error>
               <div class="image-slot">
                 <i class="el-icon-picture-outline"></i>
@@ -20,7 +20,7 @@
         </div>
       </el-row>
       <el-dialog v-model="showDetailBox" width="600px">
-        <PhotoDetail :imgData="showDetailBoxData" />
+        <PhotoDetail :id="showDetailBoxData"/>
       </el-dialog>
     </el-main>
     <el-footer>
@@ -52,7 +52,7 @@ export default {
     return {
       showImageDetail:false,
       showDetailBox:false,
-      showDetailBoxData:{},
+      showDetailBoxData:'',
       imageForm:{
         keyWord:"",
         pageSize:24,
@@ -76,8 +76,8 @@ export default {
     }
   },
   methods:{
-    openImageDetailBox(item){
-      this.showDetailBoxData = item
+    openImageDetailBox(id){
+      this.showDetailBoxData = id
       this.showDetailBox = true
     },
     async changePage(val){

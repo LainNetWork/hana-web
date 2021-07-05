@@ -136,7 +136,6 @@ export default {
       }
     },
     fileChange(file,fileList){
-      console.log(fileList)
       this.realFileList = fileList
     },
     clearSelectedImages(){

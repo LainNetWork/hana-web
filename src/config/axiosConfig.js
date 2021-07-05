@@ -11,7 +11,6 @@ $http.interceptors.request.use((config) =>{
 
 $http.interceptors.response.use((response) =>{
     let ok = response.data.isOk;
-    console.log(ok)
     if(!ok) {
         ElMessage.error(response.data.msg)
         return Promise.reject(response)
@@ -19,7 +18,6 @@ $http.interceptors.response.use((response) =>{
     return response.data
 },(error) => {
     const { response } = error
-    console.log(response)
     if (response === undefined) {
         return Promise.reject(error)
     }
