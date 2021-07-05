@@ -112,6 +112,7 @@ export default {
   watch:{
     id(newVal){
       this.refreshImageInfo(newVal)
+      this.editMode = false
     }
   },
   methods:{
