@@ -9,21 +9,36 @@
       </template>
       <div v-if="!editMode">
         <el-descriptions-item label="图片标题:">
+          <template #label>
+            <p>图片标题:</p>
+          </template>
           <p style="white-space:nowrap">{{ imageData.title }}</p>
         </el-descriptions-item>
         <el-descriptions-item label="pid:">
           <p style="white-space:nowrap">{{ imageData.pid }}</p>
         </el-descriptions-item>
-        <el-descriptions-item label="图片作者:">
+        <el-descriptions-item >
+          <template #label>
+            <p style="white-space:nowrap">图片作者:</p>
+          </template>
           <p style="white-space:nowrap">{{ imageData.author }}</p>
         </el-descriptions-item>
-        <el-descriptions-item label="作者id:">
+        <el-descriptions-item >
+          <template #label>
+            <p style="white-space:nowrap">作者id:</p>
+          </template>
           <p style="white-space:nowrap">{{ imageData.authorId }}</p>
         </el-descriptions-item>
-        <el-descriptions-item label="存储方式:">
+        <el-descriptions-item >
+          <template #label>
+            <p style="white-space:nowrap">存储方式:</p>
+          </template>
           <p style="white-space:nowrap">{{ storageTypeMap[imageData.storageType] }}</p>
         </el-descriptions-item>
-        <el-descriptions-item label="图片标签:">
+        <el-descriptions-item>
+          <template #label>
+            <p style="white-space:nowrap">图片标签:</p>
+          </template>
           <el-tag style="margin: 2px"
                   :key="tag"
                   v-for="tag in imageData.tags">
@@ -32,8 +47,11 @@
         </el-descriptions-item>
       </div>
       <div v-if="editMode">
-        <el-descriptions-item label="图片标题:">
-          <el-input style="white-space:nowrap" v-model="imageForm.title"/>
+        <el-descriptions-item>
+          <template #label>
+            <p style="white-space:nowrap">图片标题:</p>
+          </template>
+          <el-input v-model="imageForm.title"/>
         </el-descriptions-item>
         <el-descriptions-item label="pid:">
           <el-input style="white-space:nowrap" v-model="imageForm.pid"/>
