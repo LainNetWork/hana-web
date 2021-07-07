@@ -84,7 +84,7 @@
 </template>
 
 <script>
-import searchPixivByPid from "../../api/pixiv";
+import { searchPixivByPid } from "../../api/pixiv";
 export default {
   name: "ImageUploader",
   emits:["OnClose"],

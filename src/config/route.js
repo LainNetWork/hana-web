@@ -1,5 +1,6 @@
 import Gallery from "../components/admin/Gallery"
 import Config from  "../components/admin/Config"
+import FetchImage from "../components/admin/FetchImage"
 import Collection from  "../components/admin/Collection"
 import Login from  "../components/admin/Login"
 import NotFound from  "../components/admin/NotFound"
@@ -19,6 +20,10 @@ const routes = [
             {
                 path: "/collection",
                 component: Collection
+            },
+            {
+                path: "/fetchImg",
+                component: FetchImage
             },
             {
                 path: "/config",

@@ -11,6 +11,10 @@
           <i class="el-icon-picture-outline-round"></i>
           <template #title>图库</template>
         </el-menu-item>
+        <el-menu-item index="/fetchImg">
+          <i class="el-icon-upload"></i>
+          <template #title>图片采集</template>
+        </el-menu-item>
         <el-menu-item index="/collection">
           <i class="el-icon-star-on"></i>
           <template #title>我的收藏</template>
@@ -19,6 +23,7 @@
           <i class="el-icon-setting"></i>
           <template #title>系统设置</template>
         </el-menu-item>
+
       </el-menu>
     </el-col>
     <el-col :span="mainSpan" >
