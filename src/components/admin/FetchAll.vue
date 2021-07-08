@@ -7,15 +7,18 @@
       <el-form-item>
         <el-button @click="search">搜索</el-button>
       </el-form-item>
+      <el-form-item>
+        <el-button @click="fetch">采集</el-button>
+      </el-form-item>
     </el-form>
-    <el-image v-for="item in data" :src="item.url">
-
-    </el-image>
+    <el-image v-for="item in data" :src="item.url"/>
   </div>
 </template>
 
 <script>
 import { fetchImagesByUid } from "../../api/pixiv"
+import { fetchImages } from "../../api/pixiv"
+
 export default {
   name: "FetchAll",
   data(){
@@ -30,6 +33,8 @@ export default {
     async search(){
       const { data } = await fetchImagesByUid(this.searchForm.uid)
       this.data = data
+    },fetch(){
+      fetchImages(this.data)
     }
   }
 }

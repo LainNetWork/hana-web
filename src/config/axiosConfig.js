@@ -15,6 +15,9 @@ $http.interceptors.response.use((response) =>{
         ElMessage.error(response.data.msg)
         return Promise.reject(response)
     }
+    if(response.data.msg) {
+        ElMessage.success(response.data.msg)
+    }
     return response.data
 },(error) => {
     const { response } = error
