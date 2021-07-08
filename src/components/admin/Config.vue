@@ -20,20 +20,20 @@
       <el-input v-model="config.proxy"></el-input>
     </el-form-item>
     <el-form-item label="Pixiv Cookies: ">
-      <el-input v-model="config.pixivCookie"></el-input>
+      <el-input show-password v-model="config.pixivCookie"></el-input>
     </el-form-item>
 
     <el-divider content-position="left">
       <p style="font-weight: bold">OSS相关设置</p>
     </el-divider>
     <el-form-item label="腾讯云COS bucket地址: ">
-      <el-input v-model="config.tencentOssBaseUrl"></el-input>
+      <el-input show-password v-model="config.tencentOssBaseUrl"></el-input>
     </el-form-item>
     <el-form-item label="腾讯云COS Secret Id: ">
-      <el-input v-model="config.tencentOssSecretID"></el-input>
+      <el-input show-password v-model="config.tencentOssSecretID"></el-input>
     </el-form-item>
     <el-form-item label="腾讯云COS Secret Key: ">
-      <el-input v-model="config.tencentOssSecretKey"></el-input>
+      <el-input show-password v-model="config.tencentOssSecretKey"></el-input>
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="saveSystemConfig()">保存</el-button>
