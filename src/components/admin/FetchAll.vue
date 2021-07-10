@@ -11,7 +11,7 @@
         <el-button @click="fetch">采集</el-button>
       </el-form-item>
     </el-form>
-    <el-image v-for="item in data" :src="item.url"/>
+    <p v-if="data.length !== 0">已采集到{{data.length}}张图片</p>
   </div>
 </template>
 

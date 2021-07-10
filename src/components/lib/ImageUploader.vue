@@ -85,6 +85,7 @@
 
 <script>
 import { searchPixivByPid } from "../../api/pixiv";
+import { uploadImage } from "../../api/image"
 export default {
   name: "ImageUploader",
   emits:["OnClose"],
@@ -141,7 +142,7 @@ export default {
     clearSelectedImages(){
       this.$refs.upload.clearFiles()
     },
-    upload() {
+    async upload() {
       const formData = new FormData()
       formData.append("pid",this.form.pid)
       formData.append("title",this.form.title)
@@ -155,13 +156,8 @@ export default {
       this.form.tags.forEach(e=>{
         formData.append("tags",e);
       })
-      this.$http.post('/api/upload',formData).then(res=>{
-        this.$message.success("上传成功！")
-        this.cleanUploadBox()
-      }).catch(e=>{
-        this.$message.error("上传失败！")
-      })
-
+      await uploadImage(formData)
+      this.$message.success("上传成功！")
     },
     handleClose(tag) {
       this.form.tags.splice(this.form.tags.indexOf(tag), 1);

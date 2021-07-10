@@ -20,7 +20,7 @@
         </div>
       </el-row>
       <el-dialog v-model="showDetailBox" width="600px">
-        <PhotoDetail :id="showDetailBoxData"/>
+        <PhotoDetail :id="showDetailBoxData" v-on:isDelete="isDelete"/>
       </el-dialog>
     </el-main>
     <el-footer>
@@ -76,6 +76,10 @@ export default {
     }
   },
   methods:{
+    isDelete(){
+      this.showDetailBox = false
+      this.fetchImageList()
+    },
     openImageDetailBox(id){
       this.showDetailBoxData = id
       this.showDetailBox = true

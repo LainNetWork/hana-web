@@ -5,7 +5,7 @@
       <template #extra>
         <el-button v-if="!editMode" circle icon="el-icon-edit" @click="showEditBox()"></el-button>
         <el-button v-if="editMode" circle icon="el-icon-check" @click="saveEdit()"></el-button>
-<!--        <el-button circle icon="el-icon-delete" type="danger"></el-button>-->
+        <el-button circle icon="el-icon-delete" type="danger" @click="deleteImage"></el-button>
       </template>
       <div v-if="!editMode">
         <el-descriptions-item label="图片标题:">
@@ -103,7 +103,8 @@
 </template>
 
 <script>
-import {updateImageInfo,fetchImageDetail} from "../../api/image"
+import {updateImageInfo,fetchImageDetail,deleteImage} from "../../api/image"
+import { ElMessage } from 'element-plus'
 export default {
   name: "PhotoDetail",
   props:{
@@ -112,6 +113,7 @@ export default {
       required:true
     }
   },
+  emits:["isDelete"],
   data(){
     return {
       storageTypeMap: {
@@ -146,6 +148,15 @@ export default {
     }
   },
   methods:{
+    deleteImage(){
+      this.$confirm("确定要删除此图片吗？").then(async _ => {
+        await deleteImage(this.id)
+        this.$emit("isDelete")
+      }).catch(_=>{
+        ElMessage.success("取消删除")
+      })
+
+    },
     async refreshImageInfo(id){
       const {data}  = await fetchImageDetail(id)
       this.imageData = data
