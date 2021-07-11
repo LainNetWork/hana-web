@@ -27,3 +27,28 @@ jobs:
   cpuRequirement: 250m
   memoryRequirement: 128m
   timeout: 3600
+- name: Sync Main
+  steps:
+  - !CheckoutStep
+    name: Check Out
+    cloneCredential: !DefaultCredential {}
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !CommandStep
+    name: Sync To Github
+    image: alpine/git:v2.30.2
+    commands:
+    - git push -f https://LainNetWork:@secret:github-pass@@@github.com/LainNetWork/hana-web
+      HEAD:main
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  triggers:
+  - !DependencyFinishedTrigger {}
+  jobDependencies:
+  - jobName: build static web
+    requireSuccessful: true
+    artifacts: '**'
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  cpuRequirement: 250m
+  memoryRequirement: 128m
+  timeout: 3600
