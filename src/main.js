@@ -4,9 +4,10 @@ import 'element-plus/lib/theme-chalk/index.css';
 import App from './App.vue'
 import $http from "./config/axiosConfig";
 import router from "./config/route";
+import locale from 'element-plus/lib/locale/lang/zh-cn'
 
 let app = createApp(App);
 app.config.globalProperties.$http = $http
-app.use(ElementPlus)
+app.use(ElementPlus,{ locale })
 app.use(router)
 app.mount('#app')

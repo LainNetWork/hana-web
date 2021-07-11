@@ -17,14 +17,13 @@
         <el-button @click="fetch">入库</el-button>
       </el-form-item>
     </el-form>
-    <p v-if="data.length !== 0">已采集到{{data.length}}张图片</p>
+    <p v-if="data.length !== 0">已采集到{{ data.length }}张图片</p>
   </div>
 </template>
 
 <script>
 import { fetchImagesByUid } from "../../api/pixiv"
 import { fetchImages } from "../../api/pixiv"
-
 export default {
   name: "FetchAll",
   data(){
@@ -43,12 +42,14 @@ export default {
       }
       const { data } = await fetchImagesByUid(this.searchForm.uid)
       this.data = data
-    },fetch(){
+    },async fetch(){
       const form = {
         storageType: this.storageType,
         fetchedImages: this.data
       }
-      fetchImages(form)
+      await fetchImages(form)
+      this.data = []
+      this.uid = ''
     }
   }
 }

@@ -8,7 +8,7 @@
         @closed="onclose"
         width="900px">
       <el-row type="flex" justify="space-around">
-        <div style="width: 500px;height: 600px;overflow-y: scroll;">
+        <el-scrollbar style="width: 500px" height="600px">
           <el-upload
               action="#"
               :file-list="fileList"
@@ -22,7 +22,7 @@
             <i class="el-icon-plus"></i>
           </el-upload>
           <el-image-viewer :hide-on-click-modal="true" v-if="showUploadPreview" :url-list="[uploadPreviewUrl]" @close="showUploadPreview=false"/>
-        </div>
+        </el-scrollbar>
         <div style="width: 300px;height: 600px;">
           <el-form ref="form" :model="form" label-width="80px" size="small" label-position="top">
             <el-form-item label="图片标题:">
@@ -48,7 +48,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="图片标签:">
-              <div style="height: 100px;overflow-y: scroll">
+              <el-scrollbar height="100px">
                 <el-tag style="margin: 2px"
                         :key="tag"
                         v-for="tag in form.tags"
@@ -68,7 +68,7 @@
                 >
                 </el-input>
                 <el-button v-else class="button-new-tag" size="small" @click="showInput">+</el-button>
-              </div>
+              </el-scrollbar>
             </el-form-item>
           </el-form>
         </div>

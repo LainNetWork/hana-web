@@ -29,9 +29,9 @@
           background
           :current-page="imageForm.pageNum"
           @current-change="changePage"
-          layout="prev, pager, next"
+          layout="total, prev, pager, next"
           :page-size="imageForm.pageSize"
-          :total="imageForm.total">
+          :total="total">
       </el-pagination>
     </el-footer>
   </el-container>
@@ -57,9 +57,9 @@ export default {
         keyWord:"",
         pageSize:24,
         pageNum:1,
-        total:0
       },
-      pictures: []
+      pictures: [],
+      total:0
     }
   },
   created() {
@@ -96,7 +96,7 @@ export default {
       }
       const { data } = await this.fetchImgFunc(this.imageForm)
       this.pictures = data.content
-      this.imageForm.total = data.total
+      this.total = data.total
     },
     async keyPressSearch(event){
       if (event.keyCode === 13){
