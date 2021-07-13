@@ -1,7 +1,7 @@
 <template>
   <el-form style="width: 800px;margin-left: auto;margin-right: auto;margin-top: 100px"  label-position="left" label-width="170px" size="medium">
     <el-divider content-position="left">
-      <p style="font-weight: bold">登陆相关设置</p>
+      <p style="font-weight: bold">Api设置</p>
     </el-divider>
     <el-form-item label="系统BaseUrl: ">
       <el-input v-model="config.projectBaseUrl"></el-input>

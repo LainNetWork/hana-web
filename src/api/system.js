@@ -19,3 +19,7 @@ export function saveConfig(data) {
 export function likeImages(data) {
     return $http.post("/api/system/images/like",data);
 }
+
+export function likeImage(id,status) {
+    return $http.post(`/api/system/image/like/${id}/${status}`);
+}

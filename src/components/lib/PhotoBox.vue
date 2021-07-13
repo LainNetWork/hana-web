@@ -52,6 +52,11 @@
               <el-tag v-for="tag in scope.row.tags">{{tag}}</el-tag>
             </template>
           </el-table-column>
+          <el-table-column prop="like" label="收藏">
+            <template #default="scope">
+              <el-button style="font-size: 20px" type="text" :icon="scope.row.like?'el-icon-star-on':'el-icon-star-off'" circle @click="collectImage(scope.row)"></el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </el-row>
       <el-dialog v-model="showDetailBox" width="600px">
@@ -75,6 +80,7 @@
 <script>
 import PhotoDetail from "./PhotoDetail";
 import LikeCheckBox from "./LikeCheckBox";
+import { likeImage } from "../../api/system"
 export default {
   name: "PhotoBox",
   components: {LikeCheckBox, PhotoDetail},
@@ -120,6 +126,10 @@ export default {
     }
   },
   methods:{
+    async collectImage(row){
+      row.like = !row.like
+      await likeImage(row.id,row.like)
+    },
     showLikeBoxDialog(){
       this.likeBoxVal = this.selections
       this.showLikeBox = true
