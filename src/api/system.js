@@ -15,3 +15,7 @@ export function fetchSystemConfig() {
 export function saveConfig(data) {
     return $http.post("/api/system/config",data);
 }
+
+export function likeImages(data) {
+    return $http.post("/api/system/images/like",data);
+}

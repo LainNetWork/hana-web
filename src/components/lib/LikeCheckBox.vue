@@ -27,12 +27,13 @@
       <el-button v-else class="button-new-tag" size="small" @click="showInput">+</el-button>
     </el-form-item>
     <el-form-item>
-      <el-button>取消</el-button>
+      <el-button @click="like">确定</el-button>
     </el-form-item>
   </el-form>
 </template>
 
 <script>
+import { likeImages } from "../../api/system"
 export default {
   name: "LikeCheckBox",
   props:{
@@ -41,6 +42,7 @@ export default {
       required: true
     }
   },
+  emits:["beClosed"],
   // watch:{
   //   selected(newVal){
   //     console.log(newVal)
@@ -56,6 +58,17 @@ export default {
       }
     }
   },methods:{
+    like(){
+      this.$confirm("确定将图片添加到收藏吗？").then(e=>{
+        let ids = []
+        this.selected.forEach(e=>{
+          ids.push(e.id)
+        })
+        likeImages({ids:ids,tags:this.form.tags})
+        this.$emit("beClosed")
+      }).catch()
+
+    },
     handleClose(tag) {
       this.form.tags.splice(this.form.tags.indexOf(tag), 1);
     },

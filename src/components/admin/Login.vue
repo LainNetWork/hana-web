@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form label-position="left" label-width="50px" style="margin: auto;width: 300px;height: 300px">
+    <el-form label-position="left" label-width="50px" style="margin-top: 300px;margin-left: auto;margin-right:auto;width: 300px;height: 300px">
       <el-form-item label="账号:">
         <el-input v-model="account"></el-input>
       </el-form-item>

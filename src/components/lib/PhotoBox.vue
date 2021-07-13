@@ -17,7 +17,7 @@
         <el-col :span="2" v-if="showType === 'table'">
           <el-button icon="el-icon-star-on" @click="showLikeBoxDialog">收藏</el-button>
           <el-dialog title="收藏图片" v-model="showLikeBox" show-close>
-            <LikeCheckBox :selected="likeBoxVal"/>
+            <LikeCheckBox :selected="likeBoxVal" v-on:beClosed="showLikeBox = false"/>
           </el-dialog>
         </el-col>
       </el-row>
