@@ -7,8 +7,22 @@
       </div>
     </el-header>
     <el-main style="padding-left: 0;padding-right: 0">
+      <el-row style="margin-bottom: 10px">
+        <el-col :span="2">
+          <el-radio-group v-model="showType">
+            <el-radio-button label="pic"><i class="el-icon-s-grid"/></el-radio-button>
+            <el-radio-button label="table"><i class="el-icon-tickets"/></el-radio-button>
+          </el-radio-group>
+        </el-col>
+        <el-col :span="2" v-if="showType === 'table'">
+          <el-button icon="el-icon-star-on" @click="showLikeBoxDialog">收藏</el-button>
+          <el-dialog title="收藏图片" v-model="showLikeBox" show-close>
+            <LikeCheckBox :selected="likeBoxVal"/>
+          </el-dialog>
+        </el-col>
+      </el-row>
       <el-row >
-        <div class="wrapper">
+        <div v-if="showType === 'pic'" class="wrapper">
           <el-image :hide-on-click-modal="true" :key="index" fit="contain" v-for="(item, index) in pictures " style="width: 240px;height: 160px;"
                     :src="item.urls.mini" @click="openImageDetailBox(item.id)">
             <template #error>
@@ -18,6 +32,27 @@
             </template>
           </el-image>
         </div>
+        <el-table v-if="showType === 'table'" @select-all="" ref="multipleTable" fit :data="pictures" @selection-change="selectionChange" height="700">
+          <el-table-column
+              type="selection"
+              width="55">
+          </el-table-column>
+          <el-table-column prop="urls" label="预览">
+            <template #default="scope">
+              <el-image style="height: 80px;width: 120px" fit="contain" :src="scope.row.urls.mini" :preview-src-list="[scope.row.urls.original]"/>
+            </template>
+          </el-table-column>
+          <el-table-column prop="title" label="标题"/>
+          <el-table-column prop="author" label="作者"/>
+          <el-table-column prop="authorId" label="作者Id"/>
+          <el-table-column prop="pid" label="Pid"/>
+          <el-table-column prop="storageType" label="存储类型" :formatter="formatTable"/>
+          <el-table-column prop="urls" label="标签" :width="600">
+            <template #default="scope">
+              <el-tag v-for="tag in scope.row.tags">{{tag}}</el-tag>
+            </template>
+          </el-table-column>
+        </el-table>
       </el-row>
       <el-dialog v-model="showDetailBox" width="600px">
         <PhotoDetail :id="showDetailBoxData" v-on:isDelete="isDelete"/>
@@ -39,9 +74,10 @@
 
 <script>
 import PhotoDetail from "./PhotoDetail";
+import LikeCheckBox from "./LikeCheckBox";
 export default {
   name: "PhotoBox",
-  components: {PhotoDetail},
+  components: {LikeCheckBox, PhotoDetail},
   props:{
     fetchImgFunc:{
       type:Function,
@@ -50,6 +86,10 @@ export default {
   },
   data(){
     return {
+      storageTypeMap: {
+        "LOCAL": "本地存储",
+        "TENXUN": "腾讯云"
+      },
       showImageDetail:false,
       showDetailBox:false,
       showDetailBoxData:'',
@@ -58,7 +98,11 @@ export default {
         pageSize:24,
         pageNum:1,
       },
+      showType:'pic',
+      showLikeBox:false,
+      likeBoxVal:[],
       pictures: [],
+      selections: [],
       total:0
     }
   },
@@ -76,6 +120,20 @@ export default {
     }
   },
   methods:{
+    showLikeBoxDialog(){
+      this.likeBoxVal = this.selections
+      this.showLikeBox = true
+    },
+    selectionChange(val){
+      let array = [];
+      val.forEach( e =>{
+        array.push({
+          id:e.id,
+          url:e.urls.mini
+        })
+      })
+      this.selections = array;
+    },
     isDelete(){
       this.showDetailBox = false
       this.fetchImageList()
@@ -98,11 +156,22 @@ export default {
       this.pictures = data.content
       this.total = data.total
     },
+    // toggleSelection(rows){
+    //   if (rows) {
+    //     rows.forEach(row => {
+    //       if (this.selections.includes(row.id)){
+    //         this.$refs.multipleTable.toggleRowSelection(row);
+    //       }
+    //     })
+    //   }
+    // },
     async keyPressSearch(event){
       if (event.keyCode === 13){
         await this.fetchImageList()
       }
-    },
+    },formatTable(row, column, cellValue, index){
+      return this.storageTypeMap[row.storageType]
+    }
   },
 }
 </script>
