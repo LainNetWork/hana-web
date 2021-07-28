@@ -65,6 +65,7 @@ export default {
           ids.push(e.id)
         })
         likeImages({ids:ids,tags:this.form.tags})
+        this.form.tags = []
         this.$emit("beClosed")
       }).catch()
 

@@ -104,7 +104,7 @@ export default {
         pageSize:24,
         pageNum:1,
       },
-      showType:'pic',
+      showType:'table',
       showLikeBox:false,
       likeBoxVal:[],
       pictures: [],
