@@ -5,6 +5,10 @@
       <div style="display: inline-block;margin-left: 100px">
         <slot></slot>
       </div>
+      <div>
+        <el-radio v-model="imageForm.like" :label="true">收藏</el-radio>
+        <el-radio v-model="imageForm.like" :label="false">未收藏</el-radio>
+      </div>
     </el-header>
     <el-main style="padding-left: 0;padding-right: 0">
       <el-row style="margin-bottom: 10px">
@@ -100,6 +104,7 @@ export default {
       showDetailBox:false,
       showDetailBoxData:'',
       imageForm:{
+        like:false,
         keyWord:"",
         pageSize:24,
         pageNum:1,

@@ -3,6 +3,7 @@
     <el-image style="margin: 10px" :src="imageData.urls.regular" fit="contain" :preview-src-list="[imageData.urls.original]" hide-on-click-modal></el-image>
     <el-descriptions style="width: 100%" border size="small" :column="2">
       <template #extra>
+        <el-button style="font-size: 20px" type="text" :icon="imageData.like?'el-icon-star-on':'el-icon-star-off'" circle @click="collectImage()"></el-button>
         <el-button v-if="!editMode" circle icon="el-icon-edit" @click="showEditBox()"></el-button>
         <el-button v-if="editMode" circle icon="el-icon-check" @click="saveEdit()"></el-button>
         <el-button circle icon="el-icon-delete" type="danger" @click="deleteImage"></el-button>
@@ -104,6 +105,7 @@
 
 <script>
 import {updateImageInfo,fetchImageDetail,deleteImage} from "../../api/image"
+import {likeImage} from "../../api/system"
 import { ElMessage } from 'element-plus'
 export default {
   name: "PhotoDetail",
@@ -148,6 +150,10 @@ export default {
     }
   },
   methods:{
+    async collectImage(){
+      this.imageData.like = !this.imageData.like
+      await likeImage(this.id,this.imageData.like)
+    },
     deleteImage(){
       this.$confirm("确定要删除此图片吗？").then(async _ => {
         await deleteImage(this.id)
