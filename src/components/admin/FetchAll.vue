@@ -13,6 +13,7 @@
           <el-option value="TENXUN" label="腾讯云"/>
         </el-select>
       </el-form-item>
+      <el-checkbox v-model="like" label="是否默认收藏"></el-checkbox>
       <el-form-item v-if="data.length !== 0">
         <el-button @click="fetch">入库</el-button>
       </el-form-item>
@@ -32,6 +33,7 @@ export default {
         uid:''
       },
       storageType:'TENXUN',
+      like:false,
       data:[]
     }
   },
@@ -45,7 +47,8 @@ export default {
     },async fetch(){
       const form = {
         storageType: this.storageType,
-        fetchedImages: this.data
+        fetchedImages: this.data,
+        like: this.like
       }
       await fetchImages(form)
       this.data = []
