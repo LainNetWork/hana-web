@@ -27,14 +27,17 @@
       </el-row>
       <el-row >
         <div v-if="showType === 'pic'" class="wrapper">
-          <el-image :hide-on-click-modal="true" :key="index" fit="contain" v-for="(item, index) in pictures " style="width: 240px;height: 160px;"
-                    :src="item.urls.mini" @click="openImageDetailBox(item.id)">
-            <template #error>
-              <div class="image-slot">
-                <i class="el-icon-picture-outline"></i>
-              </div>
-            </template>
-          </el-image>
+          <div :key="index"  v-for="(item, index) in pictures " class="imageBox" style="width: 240px;height: 160px;">
+            <el-image :hide-on-click-modal="true" fit="contain" class="image"
+                      :src="item.urls.mini" @click="openImageDetailBox(item.id)">
+              <template #error>
+                <div class="image-slot">
+                  <i class="el-icon-picture-outline"></i>
+                </div>
+              </template>
+            </el-image>
+            <el-checkbox style="z-index: 2" type="text" class="star" icon="el-icon-star-on" @click="test"></el-checkbox>
+          </div>
         </div>
         <el-table v-if="showType === 'table'" @select-all="" ref="multipleTable" fit :data="pictures" @selection-change="selectionChange" height="700">
           <el-table-column
@@ -131,6 +134,9 @@ export default {
     }
   },
   methods:{
+    test(){
+      console.log("123")
+    },
     async collectImage(row){
       row.like = !row.like
       await likeImage(row.id,row.like)
@@ -200,4 +206,16 @@ export default {
   grid-template-columns: repeat(auto-fill, 240px);
   grid-template-rows: repeat(auto-fill, 160px);
 }
+
+.imageBox {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+.star{ grid-area: 1 / 1 / 2 / 2; }
+.image { grid-area: 1 / 1 / 6 / 6; }
+
 </style>
