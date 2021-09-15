@@ -37,8 +37,8 @@ jobs:
     name: Sync To Github
     image: alpine/git:v2.30.2
     commands:
-    - git push -f https://LainNetWork:@secret:github-pass@@@github.com/LainNetWork/hana-web
-      HEAD:main
+    - git push -f https://oauth2:@secret:githubAccessToken@@@github.com/LainNetWork/hana-web
+      HEAD:master
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   triggers:
   - !DependencyFinishedTrigger {}
