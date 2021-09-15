@@ -38,7 +38,7 @@ jobs:
     image: alpine/git:v2.30.2
     commands:
     - git push -f https://oauth2:@secret:githubAccessToken@@@github.com/LainNetWork/hana-web
-      HEAD:master
+      HEAD:main
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   triggers:
   - !DependencyFinishedTrigger {}
