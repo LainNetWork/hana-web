@@ -171,6 +171,7 @@ export default {
     async collectImage(row){
       row.like = !row.like
       await likeImage(row.id,row.like)
+      await this.fetchImageList()
     },
     showLikeBoxDialog(){
       let selected = []
