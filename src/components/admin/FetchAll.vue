@@ -45,9 +45,13 @@ export default {
       const { data } = await fetchImagesByUid(this.searchForm.uid)
       this.data = data
     },async fetch(){
+      const pids = []
+      this.data.forEach(e=>{
+        pids.push(e.id)
+      })
       const form = {
         storageType: this.storageType,
-        fetchedImages: this.data,
+        pids: pids,
         like: this.like
       }
       await fetchImages(form)
