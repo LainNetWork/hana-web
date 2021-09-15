@@ -18,12 +18,15 @@
             <el-radio-button label="table"><i class="el-icon-tickets"/></el-radio-button>
           </el-radio-group>
         </el-col>
-        <el-col :span="2" v-if="showType === 'table'">
+        <el-col :span="2">
           <el-button icon="el-icon-star-on" @click="showLikeBoxDialog">收藏</el-button>
           <el-dialog title="收藏图片" v-model="showLikeBox" show-close>
             <LikeCheckBox :selected="likeBoxVal" v-on:beClosed="showLikeBox = false"/>
           </el-dialog>
         </el-col>
+      </el-row>
+      <el-row>
+        <el-checkbox style="margin: 10px" v-model="selectAll" :indeterminate="indeterminate"  @change="allChange">全选</el-checkbox>
       </el-row>
       <el-row >
         <div v-if="showType === 'pic'" class="wrapper">
@@ -36,7 +39,8 @@
                 </div>
               </template>
             </el-image>
-            <el-checkbox style="z-index: 2" type="text" class="star" icon="el-icon-star-on" @click="test"></el-checkbox>
+            <el-checkbox style="z-index: 2" type="text" v-model="listBind[item.id]" class="star" icon="el-icon-star-on" @change="changeOne"></el-checkbox>
+            <el-button  style="font-size: 20px;z-index: 2" type="text" class="like" :icon="item.like?'el-icon-star-on':'el-icon-star-off'" circle @click="collectImage(item)"></el-button>
           </div>
         </div>
         <el-table v-if="showType === 'table'" @select-all="" ref="multipleTable" fit :data="pictures" @selection-change="selectionChange" height="700">
@@ -112,7 +116,10 @@ export default {
         pageSize:24,
         pageNum:1,
       },
-      showType:'table',
+      selectAll:false,
+      indeterminate:false,
+      listBind:{}, //图片框模式下绑定勾选状态
+      showType:'pic',
       showLikeBox:false,
       likeBoxVal:[],
       pictures: [],
@@ -131,18 +138,56 @@ export default {
       handler(){
         this.fetchImageList()
       }
+    },
+    "imageForm.like":function (){
+      this.fetchImageList()
     }
   },
   methods:{
-    test(){
-      console.log("123")
+    changeOne(){
+      let flag = false //是否全部选中
+      let notFlag = false //是否未全部选中
+      for(let item in this.listBind){
+        if(this.listBind[item]){
+          flag= true
+        }else {
+          notFlag = true
+        }
+      }
+      if (flag) {
+        this.selectAll = true
+      }
+      if (notFlag) {
+        this.selectAll = false
+      }
+      this.indeterminate = flag
+    },
+    allChange(val){
+      this.indeterminate = false
+      for (let item of this.pictures){
+        this.listBind[item.id] = val
+      }
     },
     async collectImage(row){
       row.like = !row.like
       await likeImage(row.id,row.like)
     },
     showLikeBoxDialog(){
-      this.likeBoxVal = this.selections
+      let selected = []
+      if(this.showType === "table"){
+        this.likeBoxVal = this.selections
+      }else {
+        for(let item in this.listBind){
+          if(this.listBind[item] === true){
+            selected.push({
+              id:item,
+              url:this.pictures.filter(i=>i.id === item)[0].urls.mini
+            })
+          }
+        }
+        console.log(selected)
+        this.likeBoxVal = selected
+      }
       this.showLikeBox = true
     },
     selectionChange(val){
@@ -208,6 +253,8 @@ export default {
 }
 
 .imageBox {
+  border: 1px dashed #b7b3d4;
+  border-radius: 4px;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: repeat(5, 1fr);
@@ -215,7 +262,7 @@ export default {
   grid-row-gap: 0px;
 }
 
-.star{ grid-area: 1 / 1 / 2 / 2; }
+.star{ margin:5px;grid-area: 1 / 1 / 2 / 2; }
 .image { grid-area: 1 / 1 / 6 / 6; }
-
+.like { grid-area: 5 / 5 / 6 / 6; }
 </style>
