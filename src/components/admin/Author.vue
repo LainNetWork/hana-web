@@ -37,7 +37,10 @@ export default {
   },
   methods:{
     jumpToGallery(id){
-      this.$router.push("/keyWord/" + id)
+      let routeUrl = this.$router.resolve({
+        path: "/keyWord/" + id
+      });
+      window.open(routeUrl .href, '_blank');
     },
     async load() {
       console.log("?")
