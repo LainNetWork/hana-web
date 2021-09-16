@@ -80,7 +80,7 @@
           background
           :current-page="imageForm.pageNum"
           @current-change="changePage"
-          layout="total, prev, pager, next"
+          layout="total, prev, pager, next, jumper"
           :page-size="imageForm.pageSize"
           :total="total">
       </el-pagination>
