@@ -212,6 +212,7 @@ export default {
     async changePage(val){
       this.imageForm.pageNum = val
       await this.fetchImageList()
+      this.listBind = {}
     },
     async fetchImageList(){
       if (this.isCollapse.value.isCollapse) {
