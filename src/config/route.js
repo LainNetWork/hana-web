@@ -1,7 +1,7 @@
 import Gallery from "../components/admin/Gallery"
 import Config from  "../components/admin/Config"
 import FetchImage from "../components/admin/FetchImage"
-import Collection from  "../components/admin/Collection"
+import Author from "../components/admin/Author"
 import Login from  "../components/admin/Login"
 import NotFound from  "../components/admin/NotFound"
 import Index from  "../components/admin/Index"
@@ -14,12 +14,17 @@ const routes = [
         component: Index,
         children:[
             {
+                path: "/keyWord/:keyWord",
+                component: Gallery,
+                props:true
+            },
+            {
                 path: "/",
                 component: Gallery
             },
             {
-                path: "/collection",
-                component: Collection
+                path: "/author",
+                component: Author
             },
             {
                 path: "/fetchImg",

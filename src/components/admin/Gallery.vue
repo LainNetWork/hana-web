@@ -1,6 +1,6 @@
 <template>
   <div style="margin: 10px">
-    <PhotoBox ref="picBox" :fetch-img-func="fetchImageList">
+    <PhotoBox ref="picBox" :fetch-img-func="fetchImageList" :key-word="inKeyWord">
       <image-uploader v-on:OnClose="imgUploadClose"/>
     </PhotoBox>
   </div>
@@ -15,9 +15,24 @@ export default {
   components:{
     PhotoBox,
     ImageUploader
+  },
+  props:{
+    keyWord:{
+      type: String
+    }
+  },
+  data(){
+    return {
+      inKeyWord: this.keyWord
+    }
   },setup(){
     return {fetchImageList}
-  },methods:{
+  },
+  created() {
+    console.log(this.keyWord)
+    console.log(this.inKeyWord)
+  }
+  ,methods:{
     imgUploadClose(){
       this.$refs["picBox"].fetchImageList()
     }

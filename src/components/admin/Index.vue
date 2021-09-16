@@ -15,9 +15,9 @@
           <i class="el-icon-upload"></i>
           <template #title>图片采集</template>
         </el-menu-item>
-        <el-menu-item index="/collection">
+        <el-menu-item index="/author">
           <i class="el-icon-star-on"></i>
-          <template #title>我的收藏</template>
+          <template #title>画师广场</template>
         </el-menu-item>
         <el-menu-item index="/config">
           <i class="el-icon-setting"></i>

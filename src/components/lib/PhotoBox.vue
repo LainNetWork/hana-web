@@ -99,7 +99,10 @@ export default {
     fetchImgFunc:{
       type:Function,
       required:true
-    }
+    },
+    keyWord:{
+      type:String,
+    },
   },
   data(){
     return {
@@ -112,7 +115,7 @@ export default {
       showDetailBoxData:'',
       imageForm:{
         like:false,
-        keyWord:"",
+        keyWord:this.keyWord,
         pageSize:24,
         pageNum:1,
       },
@@ -138,6 +141,11 @@ export default {
       handler(){
         this.fetchImageList()
       }
+    },
+    keyWord:function (newVal){
+      console.log(newVal)
+      this.imageForm.keyWord = newVal
+      this.fetchImageList()
     },
     "imageForm.like":function (){
       this.fetchImageList()
