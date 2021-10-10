@@ -22,7 +22,9 @@
     <el-form-item label="Pixiv Cookies: ">
       <el-input show-password v-model="config.pixivCookie"></el-input>
     </el-form-item>
-
+    <el-form-item label="System Token">
+      <el-input show-password v-model="config.systemToken"></el-input>
+    </el-form-item>
     <el-divider content-position="left">
       <p style="font-weight: bold">OSS相关设置</p>
     </el-divider>
@@ -53,6 +55,7 @@ export default {
         proxy: '',
         projectBaseUrl: '',
         pixivCookie:'',
+        systemToken:'',
         adminAccount:'',
         adminPassword:'',
         tencentOssBaseUrl:'',
