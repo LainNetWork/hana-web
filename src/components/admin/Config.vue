@@ -24,6 +24,7 @@
     </el-form-item>
     <el-form-item label="System Token">
       <el-input show-password v-model="config.systemToken"></el-input>
+      <el-button @click="generateSystemKey">重置token</el-button>
     </el-form-item>
     <el-divider content-position="left">
       <p style="font-weight: bold">OSS相关设置</p>
@@ -45,7 +46,7 @@
 
 <script>
 import {reactive, toRefs,onMounted} from 'vue'
-import { fetchSystemConfig,saveConfig } from '../../api/system'
+import { fetchSystemConfig,saveConfig,generateKey} from '../../api/system'
 import {ElMessage} from "element-plus";
 export default {
   name: "Config",
@@ -74,9 +75,14 @@ export default {
       await saveConfig(state.config)
       ElMessage.success("保存成功！")
     }
+    const generateSystemKey = async ()=>{
+      const { data } = await generateKey();
+      state.config.systemToken = data
+    }
     return {
       ...toRefs(state),
-      saveSystemConfig
+      saveSystemConfig,
+      generateSystemKey
     }
   }
 }
