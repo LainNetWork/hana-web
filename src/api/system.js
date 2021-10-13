@@ -9,21 +9,21 @@ export async function login(account, pass) {
 }
 
 export function fetchSystemConfig() {
-    return $http.get("/api/system/config");
+    return $http.get("/hana/system/config");
 }
 
 export function saveConfig(data) {
-    return $http.post("/api/system/config",data);
+    return $http.post("/hana/system/config",data);
 }
 
 export function likeImages(data) {
-    return $http.post("/api/system/images/like",data);
+    return $http.post("/hana/system/images/like",data);
 }
 
 export function generateKey() {
-    return $http.get(`/api/system/generateKey`);
+    return $http.get(`/hana/system/generateKey`);
 }
 
 export function likeImage(id,status) {
-    return $http.post(`/api/system/image/like/${id}/${status}`);
+    return $http.post(`/hana/system/image/like/${id}/${status}`);
 }
