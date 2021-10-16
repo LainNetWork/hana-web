@@ -8,6 +8,7 @@
       <div>
         <el-radio v-model="imageForm.like" :label="true">收藏</el-radio>
         <el-radio v-model="imageForm.like" :label="false">未收藏</el-radio>
+        <el-switch v-model="imageForm.r18" name="R18" active-text="ON" inactive-text="R18-OFF" @change="fetchImageList"/>
       </div>
     </el-header>
     <el-main style="padding-left: 0;padding-right: 0">
@@ -23,6 +24,9 @@
           <el-dialog title="收藏图片" v-model="showLikeBox" show-close>
             <LikeCheckBox :selected="likeBoxVal" v-on:beClosed="showLikeBox = false"/>
           </el-dialog>
+        </el-col>
+        <el-col :span="2">
+          <el-button icon="el-icon-star-on" @click="cancelLikeSelect">取消收藏</el-button>
         </el-col>
       </el-row>
       <el-row>
@@ -91,7 +95,7 @@
 <script>
 import PhotoDetail from "./PhotoDetail";
 import LikeCheckBox from "./LikeCheckBox";
-import { likeImage } from "../../api/system"
+import { likeImage,dislikeImages } from "../../api/system"
 export default {
   name: "PhotoBox",
   components: {LikeCheckBox, PhotoDetail},
@@ -115,6 +119,7 @@ export default {
       showDetailBoxData:'',
       imageForm:{
         like:false,
+        r18:false,
         keyWord:this.keyWord,
         pageSize:24,
         pageNum:1,
@@ -143,7 +148,6 @@ export default {
       }
     },
     keyWord:function (newVal){
-      console.log(newVal)
       this.imageForm.keyWord = newVal
       this.fetchImageList()
     },
@@ -153,6 +157,7 @@ export default {
   },
   methods:{
     changeOne(){
+      console.log(this.listBind)
       let flag = false //是否全部选中
       let notFlag = false //是否未全部选中
       for(let item in this.listBind){
@@ -182,6 +187,18 @@ export default {
       await this.fetchImageList()
     },
     showLikeBoxDialog(){
+      this.handlerSelect()
+      this.showLikeBox = true
+    },
+    async cancelLikeSelect(){
+      this.handlerSelect()
+      let ids = this.likeBoxVal.map(e=>e.id);
+      await dislikeImages({
+        ids
+      })
+      await this.fetchImageList()
+    },
+    handlerSelect(){
       let selected = []
       if(this.showType === "table"){
         this.likeBoxVal = this.selections
@@ -194,10 +211,8 @@ export default {
             })
           }
         }
-        console.log(selected)
         this.likeBoxVal = selected
       }
-      this.showLikeBox = true
     },
     selectionChange(val){
       let array = [];
@@ -220,7 +235,6 @@ export default {
     async changePage(val){
       this.imageForm.pageNum = val
       await this.fetchImageList()
-      this.listBind = {}
     },
     async fetchImageList(){
       if (this.isCollapse.value.isCollapse) {
@@ -231,6 +245,10 @@ export default {
       const { data } = await this.fetchImgFunc(this.imageForm)
       this.pictures = data.content
       this.total = data.total
+      this.listBind = {}
+      for (let item of this.pictures){
+        this.listBind[item.id] = false
+      }
     },
     // toggleSelection(rows){
     //   if (rows) {

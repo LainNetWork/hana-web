@@ -19,6 +19,9 @@ export function saveConfig(data) {
 export function likeImages(data) {
     return $http.post("/hana/system/images/like",data);
 }
+export function dislikeImages(data) {
+    return $http.post("/hana/system/images/dislike",data);
+}
 
 export function generateKey() {
     return $http.get(`/hana/system/generateKey`);

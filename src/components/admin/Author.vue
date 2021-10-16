@@ -1,13 +1,16 @@
 <template>
   <div class="masonry" >
     <el-card v-for="item in resultData.content" style="width: 100%;break-inside: avoid;margin-bottom: 10px" :body-style="{ padding: '0px' }">
-      <div v-if="item.no_preview" @click="jumpToGallery(item._id)" style="text-align: center">
-        <h1>不可描述</h1>
+      <div style="overflow:hidden;">
+        <div v-if="item.no_preview" @click="jumpToGallery(item.uid)" style="text-align: center">
+          <h1>不可描述</h1>
+        </div>
+        <el-image v-else  @click="jumpToGallery(item.uid)" style="width: 100%" fit="contain" :src="item.urls.regular"></el-image>
       </div>
-      <el-image v-else  @click="jumpToGallery(item._id)" style="width: 100%" fit="contain" :src="item.urls.regular"></el-image>
-      <div style="padding: 14px;">
-        <h3>画师：{{ item.author_name }}</h3>
-        <h3>UID:{{ item._id }}</h3>
+      <div style="padding: 10px;position: relative">
+        <div><h3>画师：{{ item.author_name }}</h3></div>
+        <div><h3>UID:{{ item.uid }}</h3></div>
+        <el-button @click="likeAuthor(item)" type="text" :icon="item.like?'el-icon-star-on':'el-icon-star-off'" style="font-size: 25px;position: absolute;right: 10px;bottom: 10px;color: #ff4d51;"/>
       </div>
     </el-card>
   </div>
@@ -18,7 +21,7 @@
 </template>
 
 <script>
-import { fetchAuthors } from "../../api/author"
+import { fetchAuthors, likeAuthors } from "../../api/author"
 export default {
   name: "Author",
   created() {
@@ -60,6 +63,13 @@ export default {
     //     })
     //   }
     // },
+    async likeAuthor(item){
+      await likeAuthors({
+        uid:item.uid,
+        like:!item.like
+      })
+      await this.fetchAuthorList()
+    },
     async fetchAuthorList(){
       const {data} = await fetchAuthors(this.formData)
       this.resultData = data
