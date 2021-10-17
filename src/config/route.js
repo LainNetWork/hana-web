@@ -4,6 +4,7 @@ import FetchImage from "../components/admin/FetchImage"
 import Author from "../components/admin/Author"
 import Login from  "../components/admin/Login"
 import NotFound from  "../components/admin/NotFound"
+import UpdateTask from  "../components/admin/UpdateTask"
 import Index from  "../components/admin/Index"
 
 import * as VueRouter from 'vue-router';
@@ -15,6 +16,11 @@ const routes = [
         children:[
             {
                 path: "/keyWord/:keyWord",
+                component: Gallery,
+                props:true
+            },
+            {
+                path: "/task/:taskId",
                 component: Gallery,
                 props:true
             },
@@ -34,6 +40,11 @@ const routes = [
                 path: "/config",
                 component: Config
             },
+            {
+                path: "/task",
+                component: UpdateTask,
+                props: true
+            }
         ]
     },
     {

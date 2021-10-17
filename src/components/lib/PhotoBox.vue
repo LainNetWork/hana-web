@@ -107,6 +107,9 @@ export default {
     keyWord:{
       type:String,
     },
+    taskId:{
+      type:String,
+    }
   },
   data(){
     return {
@@ -120,6 +123,7 @@ export default {
       imageForm:{
         like:false,
         r18:false,
+        taskId:this.taskId,
         keyWord:this.keyWord,
         pageSize:24,
         pageNum:1,
@@ -157,7 +161,6 @@ export default {
   },
   methods:{
     changeOne(){
-      console.log(this.listBind)
       let flag = false //是否全部选中
       let notFlag = false //是否未全部选中
       for(let item in this.listBind){

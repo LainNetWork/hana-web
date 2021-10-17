@@ -1,6 +1,6 @@
 <template>
   <div style="margin: 10px">
-    <PhotoBox ref="picBox" :fetch-img-func="fetchImageList" :key-word="inKeyWord">
+    <PhotoBox ref="picBox" :fetch-img-func="fetchImageList" :key-word="inKeyWord" :task-id="inTaskId">
       <image-uploader v-on:OnClose="imgUploadClose"/>
     </PhotoBox>
   </div>
@@ -23,14 +23,11 @@ export default {
   },
   data(){
     return {
-      inKeyWord: this.keyWord
+      inKeyWord: this.keyWord,
+      inTaskId: this.taskId
     }
   },setup(){
     return {fetchImageList}
-  },
-  created() {
-    console.log(this.keyWord)
-    console.log(this.inKeyWord)
   }
   ,methods:{
     imgUploadClose(){

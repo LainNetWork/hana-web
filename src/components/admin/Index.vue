@@ -19,6 +19,10 @@
           <i class="el-icon-star-on"></i>
           <template #title>画师广场</template>
         </el-menu-item>
+        <el-menu-item index="/task">
+          <i class="el-icon-star-on"></i>
+          <template #title>采集任务</template>
+        </el-menu-item>
         <el-menu-item index="/config">
           <i class="el-icon-setting"></i>
           <template #title>系统设置</template>
