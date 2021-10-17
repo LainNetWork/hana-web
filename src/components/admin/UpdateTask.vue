@@ -5,7 +5,7 @@
     <el-table-column label="创建时间" prop="create_at"/>
     <el-table-column label="详情">
       <template #default="scope">
-        <el-button @click="jumpToGallery(scope.row.id)"></el-button>
+        <el-button @click="jumpToGallery(scope.row.id)">跳转详情</el-button>
       </template>
     </el-table-column>
   </el-table>

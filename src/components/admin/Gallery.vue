@@ -19,6 +19,9 @@ export default {
   props:{
     keyWord:{
       type: String
+    },
+    taskId:{
+      type: String
     }
   },
   data(){
