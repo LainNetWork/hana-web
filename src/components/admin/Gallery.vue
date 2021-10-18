@@ -1,5 +1,5 @@
 <template>
-  <div style="margin: 5px">
+  <div style="margin-left: 5px;margin-right: 5px">
     <PhotoBox ref="picBox" :fetch-img-func="fetchImageList" :key-word="inKeyWord" :task-id="inTaskId">
       <image-uploader v-on:OnClose="imgUploadClose"/>
     </PhotoBox>
