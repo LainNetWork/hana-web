@@ -1,12 +1,15 @@
 <template>
+  <el-tooltip content="刷新" placement="right" effect="light">
+    <el-button icon="el-icon-refresh" type="text" style="font-size: 30px" @click="queryTaskList"/>
+  </el-tooltip>
   <el-table :data="task.content">
     <el-table-column label="任务名" prop="task_name"/>
     <el-table-column label="图片数" prop="count"/>
     <el-table-column label="剩余图片数" prop="remain_count"/>
     <el-table-column label="创建时间" prop="create_at"/>
-    <el-table-column label="详情">
+    <el-table-column label="操作">
       <template #default="scope">
-        <el-button @click="jumpToGallery(scope.row.id)">跳转详情</el-button>
+        <el-button type="text" @click="jumpToGallery(scope.row.id)">跳转详情</el-button>
       </template>
     </el-table-column>
   </el-table>
