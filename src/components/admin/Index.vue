@@ -15,13 +15,13 @@
           <i class="el-icon-upload"></i>
           <template #title>图片采集</template>
         </el-menu-item>
+        <el-menu-item index="/task">
+          <i class="el-icon-date"></i>
+          <template #title>采集任务</template>
+        </el-menu-item>
         <el-menu-item index="/author">
           <i class="el-icon-star-on"></i>
           <template #title>画师广场</template>
-        </el-menu-item>
-        <el-menu-item index="/task">
-          <i class="el-icon-star-on"></i>
-          <template #title>采集任务</template>
         </el-menu-item>
         <el-menu-item index="/config">
           <i class="el-icon-setting"></i>
