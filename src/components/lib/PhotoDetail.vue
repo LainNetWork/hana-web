@@ -22,7 +22,10 @@
           <template #label>
             <p style="white-space:nowrap">图片作者:</p>
           </template>
-          <p style="white-space:nowrap">{{ imageData.author }}</p>
+          <div>
+            <el-button type="text" @click="jumpToSearch(imageData.author)">{{ imageData.author }}</el-button>
+            <el-button style="font-size: 20px;display: inline-block;color: red" type="text" :icon="imageData.authorLiked?'el-icon-star-on':'el-icon-star-off'" circle @click="collectAuthor"></el-button>
+          </div>
         </el-descriptions-item>
         <el-descriptions-item >
           <template #label>
@@ -105,6 +108,7 @@
 
 <script>
 import {updateImageInfo,fetchImageDetail,deleteImage} from "../../api/image"
+import {likeAuthors} from "../../api/author"
 import {likeImage} from "../../api/system"
 import { ElMessage } from 'element-plus'
 export default {
@@ -150,9 +154,22 @@ export default {
     }
   },
   methods:{
+    async jumpToSearch(authorId){
+      let routeUrl = this.$router.resolve({
+        path: "/keyWord/" + authorId
+      });
+      window.open(routeUrl .href, '_blank');
+    },
     async collectImage(){
       this.imageData.like = !this.imageData.like
       await likeImage(this.id,this.imageData.like)
+    },
+    async collectAuthor(){
+      await likeAuthors({
+        uid:this.imageData.authorId,
+        like:!this.imageData.authorLiked
+      })
+      await this.refreshImageInfo(this.id)
     },
     deleteImage(){
       this.$confirm("确定要删除此图片吗？").then(async _ => {
