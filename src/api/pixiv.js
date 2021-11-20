@@ -1,5 +1,4 @@
 import $http from "../config/axiosConfig";
-import da from "element-plus/packages/locale/lang/da";
 
 
 export function searchPixivByPid(pid){
