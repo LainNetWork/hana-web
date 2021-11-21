@@ -1,6 +1,10 @@
 <template>
   <el-tooltip content="刷新" placement="right" effect="light">
-    <el-button icon="el-icon-refresh" type="text" style="font-size: 30px" @click="queryTaskList"/>
+    <el-button type="text" circle @click="queryTaskList">
+      <el-icon size="30">
+        <Refresh />
+      </el-icon>
+    </el-button>
   </el-tooltip>
   <el-table :data="task.content">
     <el-table-column label="任务名" prop="task_name"/>
@@ -26,8 +30,10 @@
 
 <script>
 import {fetchTaskList} from "../../api/task"
+import {Refresh} from "@element-plus/icons";
 export default {
   name: "UpdateTask",
+  components:{Refresh},
   data(){
     return{
       taskForm:{
