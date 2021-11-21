@@ -53,7 +53,6 @@
 <script>
 
 import {computed} from "vue";
-import favicon from '../public/favicon.ico'
 import {PictureFilled,UploadFilled,StarFilled,GoodsFilled,Tools,DArrowLeft,DArrowRight} from "@element-plus/icons";
 export default {
   name: "Index",
@@ -65,11 +64,6 @@ export default {
     Tools,
     DArrowLeft,
     DArrowRight,
-  },
-  setup(){
-    return {
-      favicon
-    }
   },
   data() {
     return {

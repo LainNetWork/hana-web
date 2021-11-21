@@ -34,6 +34,7 @@
 
 <script>
 import { likeImages } from "../../api/system"
+import {ElMessageBox} from "element-plus";
 export default {
   name: "LikeCheckBox",
   props:{
@@ -59,7 +60,7 @@ export default {
     }
   },methods:{
     like(){
-      this.$confirm("确定将图片添加到收藏吗？").then(e=>{
+      ElMessageBox.confirm("确定将图片添加到收藏吗？").then(e=>{
         let ids = []
         this.selected.forEach(e=>{
           ids.push(e.id)

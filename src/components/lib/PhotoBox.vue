@@ -13,7 +13,7 @@
         </div>
       </div>
     </el-header>
-    <el-main style="padding-left: 20px;padding-right: 0">
+    <el-main style="padding-left: 5px;padding-right: 0">
       <el-row>
         <el-col :span="2">
           <el-radio-group v-model="showType">
@@ -25,7 +25,6 @@
             </el-radio-button>
           </el-radio-group>
         </el-col>
-        <el-checkbox style="margin: 10px" v-model="selectAll" :indeterminate="indeterminate"  @change="allChange">全选</el-checkbox>
         <el-col :span="2">
           <el-button @click="showLikeBoxDialog">
             <el-icon color="red">
@@ -44,6 +43,9 @@
             </el-icon>
             取消收藏
           </el-button>
+        </el-col>
+        <el-col :span="2">
+          <el-checkbox style="margin: 10px" v-model="selectAll" :indeterminate="indeterminate"  @change="allChange">全选</el-checkbox>
         </el-col>
       </el-row>
       <el-row >
