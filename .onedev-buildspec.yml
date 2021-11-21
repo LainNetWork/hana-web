@@ -1,0 +1,54 @@
+version: 8
+jobs:
+- name: build static web
+  steps:
+  - !CheckoutStep
+    name: checkout
+    cloneCredential: !DefaultCredential {}
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !CommandStep
+    name: command
+    image: node:16.3.0
+    commands:
+    - npm install
+    - npm run build
+    - ls
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !PublishArtifactStep
+    name: publish Artifacts
+    artifacts: dist/
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  triggers:
+  - !BranchUpdateTrigger
+    branches: master
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  cpuRequirement: 250m
+  memoryRequirement: 128m
+  timeout: 3600
+- name: Sync Main
+  steps:
+  - !CheckoutStep
+    name: Check Out
+    cloneCredential: !DefaultCredential {}
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !CommandStep
+    name: Sync To Github
+    image: alpine/git:v2.30.2
+    commands:
+    - git push -f https://oauth2:@secret:githubAccessToken@@@github.com/LainNetWork/hana-web
+      HEAD:main
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  triggers:
+  - !DependencyFinishedTrigger {}
+  jobDependencies:
+  - jobName: build static web
+    requireSuccessful: true
+    artifacts: '**'
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  cpuRequirement: 250m
+  memoryRequirement: 128m
+  timeout: 3600
