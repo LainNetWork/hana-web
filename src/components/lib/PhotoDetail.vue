@@ -3,10 +3,27 @@
     <el-image style="margin: 10px" :src="imageData.urls.regular" fit="contain" :preview-src-list="[imageData.urls.original]" hide-on-click-modal></el-image>
     <el-descriptions style="width: 100%" border size="small" :column="2">
       <template #extra>
-        <el-button style="font-size: 20px" type="text" :icon="imageData.like?'el-icon-star-on':'el-icon-star-off'" circle @click="collectImage()"></el-button>
-        <el-button v-if="!editMode" circle icon="el-icon-edit" @click="showEditBox()"></el-button>
-        <el-button v-if="editMode" circle icon="el-icon-check" @click="saveEdit()"></el-button>
-        <el-button circle icon="el-icon-delete" type="danger" @click="deleteImage"></el-button>
+        <el-button circle @click="collectImage">
+          <el-icon color="#f56c6c">
+            <star-filled v-if="imageData.like" ></star-filled>
+            <star v-else></star>
+          </el-icon>
+        </el-button>
+        <el-button v-if="!editMode" circle @click="showEditBox">
+          <el-icon>
+            <Edit/>
+          </el-icon>
+        </el-button>
+        <el-button v-if="editMode" circle @click="saveEdit">
+          <el-icon>
+            <Check/>
+          </el-icon>
+        </el-button>
+        <el-button circle type="danger" @click="deleteImage">
+          <el-icon>
+            <Delete/>
+          </el-icon>
+        </el-button>
       </template>
       <div v-if="!editMode">
         <el-descriptions-item label="图片标题:">
@@ -20,11 +37,17 @@
         </el-descriptions-item>
         <el-descriptions-item >
           <template #label>
-            <p style="white-space:nowrap">图片作者:</p>
+            <p style="white-space:nowrap">
+              <el-button type="text" style="display: inline-block;padding: 0" circle @click="collectAuthor">
+                <el-icon size="22" color="red">
+                  <star-filled v-if="imageData.authorLiked" ></star-filled>
+                  <star v-else></star>
+                </el-icon>
+              </el-button>
+              图片作者:</p>
           </template>
           <div>
             <el-button type="text" @click="jumpToSearch(imageData.author)">{{ imageData.author }}</el-button>
-            <el-button style="font-size: 20px;display: inline-block;color: red" type="text" :icon="imageData.authorLiked?'el-icon-star-on':'el-icon-star-off'" circle @click="collectAuthor"></el-button>
           </div>
         </el-descriptions-item>
         <el-descriptions-item >
@@ -110,7 +133,8 @@
 import {updateImageInfo,fetchImageDetail,deleteImage} from "../../api/image"
 import {likeAuthors} from "../../api/author"
 import {likeImage} from "../../api/system"
-import { ElMessage } from 'element-plus'
+import {ElMessage, ElMessageBox} from 'element-plus'
+import {StarFilled,Star, Edit, Check, Delete} from "@element-plus/icons";
 export default {
   name: "PhotoDetail",
   props:{
@@ -118,6 +142,9 @@ export default {
       type:String,
       required:true
     }
+  },
+  components: {
+    StarFilled,Star,Edit,Check,Delete
   },
   emits:["isDelete"],
   data(){
@@ -132,7 +159,8 @@ export default {
         urls:{
           regular:'',
           original:''
-        }
+        },
+        authorLiked: false
       },
       imageForm: {
         pid:'',
@@ -172,7 +200,7 @@ export default {
       await this.refreshImageInfo(this.id)
     },
     deleteImage(){
-      this.$confirm("确定要删除此图片吗？").then(async _ => {
+      ElMessageBox.confirm("确定要删除此图片吗？").then(async _ => {
         await deleteImage(this.id)
         this.$emit("isDelete")
       }).catch(_=>{

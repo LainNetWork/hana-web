@@ -10,7 +10,12 @@
       <div style="padding: 10px;position: relative">
         <div><h3>画师：{{ item.author_name }}</h3></div>
         <div><h3>UID:{{ item.uid }}</h3></div>
-        <el-button @click="likeAuthor(item)" type="text" :icon="item.like?'el-icon-star-on':'el-icon-star-off'" style="font-size: 25px;position: absolute;right: 10px;bottom: 10px;color: #ff4d51;"/>
+        <el-button @click="likeAuthor(item)" type="text" style="position: absolute;right: 10px;bottom: 10px;color: #ff4d51;">
+          <el-icon size="30">
+            <StarFilled  v-if="item.like" ></StarFilled>
+            <Star v-else></Star>
+          </el-icon>
+        </el-button>
       </div>
     </el-card>
   </div>
@@ -22,10 +27,17 @@
 
 <script>
 import { fetchAuthors, likeAuthors } from "../../api/author"
-export default {
+import {defineComponent } from 'vue'
+import {Star,StarFilled} from "@element-plus/icons";
+
+export default defineComponent({
   name: "Author",
   created() {
     this.fetchAuthorList()
+  },
+  components: {
+    Star,
+    StarFilled
   },
   data(){
     return{
@@ -52,17 +64,6 @@ export default {
       this.formData.pageNum = page
       this.fetchAuthorList()
     },
-    // load() {
-    //   if (this.resultData.pageSize * this.resultData.pageNum <= this.resultData.total) {
-    //     this.formData.pageNum = this.formData.pageNum + 1
-    //     fetchAuthors(this.formData).then(e=>{
-    //       let data = e.data
-    //       this.resultData.content = this.resultData.content.concat(data.content)
-    //       this.resultData.pageNum = data.pageNum
-    //       this.resultData.pageSize = data.pageSize
-    //     })
-    //   }
-    // },
     async likeAuthor(item){
       await likeAuthors({
         uid:item.uid,
@@ -75,7 +76,7 @@ export default {
       this.resultData = data
     }
   }
-}
+})
 </script>
 
 <style scoped>

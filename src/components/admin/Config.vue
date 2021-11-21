@@ -45,10 +45,10 @@
 </template>
 
 <script>
-import {reactive, toRefs,onMounted} from 'vue'
+import {reactive, toRefs,onMounted, defineComponent} from 'vue'
 import { fetchSystemConfig,saveConfig,generateKey} from '../../api/system'
 import {ElMessage} from "element-plus";
-export default {
+export default defineComponent({
   name: "Config",
   setup(){
     const state = reactive({
@@ -85,7 +85,7 @@ export default {
       generateSystemKey
     }
   }
-}
+})
 </script>
 
 <style scoped>

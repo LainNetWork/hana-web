@@ -9,8 +9,9 @@
 </template>
 
 <script>
-import FetchAll from "./FetchAll";
-export default {
+import FetchAll from "./FetchAll.vue";
+import { defineComponent } from "vue";
+export default defineComponent({
   name: "FetchImage",
   components: {FetchAll},
   data(){
@@ -18,7 +19,7 @@ export default {
       activeName:'first'
     }
   }
-}
+})
 </script>
 
 <style scoped>

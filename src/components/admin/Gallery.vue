@@ -8,9 +8,11 @@
 
 <script>
 import { fetchImageList } from "../../api/image";
-import PhotoBox from "../../components/lib/PhotoBox";
-import ImageUploader from '../../components/lib/ImageUploader'
-export default {
+import PhotoBox from "../../components/lib/PhotoBox.vue";
+import ImageUploader from '../../components/lib/ImageUploader.vue'
+import {defineComponent } from 'vue'
+
+export default  defineComponent({
   name: "HomePage",
   components:{
     PhotoBox,
@@ -37,7 +39,7 @@ export default {
       this.$refs["picBox"].fetchImageList()
     }
   }
-}
+})
 </script>
 
 <style scoped>
