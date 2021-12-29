@@ -25,6 +25,7 @@
 <script>
 import { fetchImagesByUid } from "../../api/pixiv"
 import { fetchImages } from "../../api/pixiv"
+import {ElMessage} from "element-plus";
 export default {
   name: "FetchAll",
   data(){
@@ -38,6 +39,12 @@ export default {
     }
   },
   methods:{
+    test(){
+      ElMessage({
+        message:"lalalal",
+        type:"error"
+      })
+    },
     async search(){
       if (this.searchForm.uid === '') {
         return
