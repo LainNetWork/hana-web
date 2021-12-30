@@ -15,8 +15,8 @@
     </el-header>
     <el-main style="padding-left: 5px;padding-right: 0">
       <el-row>
-        <el-col :span="2">
-          <el-radio-group v-model="showType">
+        <el-col :span="3">
+          <el-radio-group v-model="showType" style="width: 200px">
             <el-radio-button label="pic">
               <el-icon><Grid /></el-icon>
             </el-radio-button>
@@ -42,6 +42,14 @@
               <star-filled></star-filled>
             </el-icon>
             取消收藏
+          </el-button>
+        </el-col>
+        <el-col :span="2">
+          <el-button @click="deleteMany">
+            <el-icon>
+              <star-filled></star-filled>
+            </el-icon>
+            批量删除
           </el-button>
         </el-col>
         <el-col :span="2">
@@ -127,6 +135,7 @@ import PhotoDetail from "./PhotoDetail.vue";
 import LikeCheckBox from "./LikeCheckBox.vue";
 import { likeImage,dislikeImages } from "../../api/system"
 import {StarFilled,Star,Grid,List} from "@element-plus/icons";
+import {deleteImages} from "../../api/image";
 export default {
   name: "PhotoBox",
   components: {LikeCheckBox, PhotoDetail, Star, StarFilled, Grid,List},
@@ -223,6 +232,12 @@ export default {
     showLikeBoxDialog(){
       this.handlerSelect()
       this.showLikeBox = true
+    },
+    async deleteMany(){
+      this.handlerSelect()
+      let ids = this.likeBoxVal.map(e=>e.id);
+      await deleteImages(ids)
+      await this.fetchImageList()
     },
     async cancelLikeSelect(){
       this.handlerSelect()
