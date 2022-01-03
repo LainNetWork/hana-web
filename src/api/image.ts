@@ -18,3 +18,7 @@ export function fetchImageDetail(id: any){
 export function deleteImage(id: any){
     return $http.delete(`/hana/image/${id}`);
 }
+
+export function deleteImages(ids: string[]){
+    return $http.delete(`/hana/image/`,{data: ids});
+}
