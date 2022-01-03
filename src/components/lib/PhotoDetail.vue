@@ -54,7 +54,7 @@
           <template #label>
             <p style="white-space:nowrap">作者id:</p>
           </template>
-          <p style="white-space:nowrap">{{ imageData.authorId }}</p>
+          <el-button type="text" @click="jumpToSearch(imageData.authorId)">{{ imageData.authorId }}</el-button>
         </el-descriptions-item>
         <el-descriptions-item >
           <template #label>
