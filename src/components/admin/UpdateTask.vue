@@ -9,7 +9,11 @@
   <el-table :data="task.content">
     <el-table-column label="任务名" prop="task_name"/>
     <el-table-column label="图片数" prop="count"/>
-    <el-table-column label="剩余图片数" prop="remain_count"/>
+    <el-table-column label="下载进度" prop="remain_count">
+      <template #default="scope">
+        <el-progress :text-inside="true" :stroke-width="16" :percentage="(scope.row.count - scope.row.remain_count)*100/scope.row.count" />
+      </template>
+    </el-table-column>
     <el-table-column label="创建时间" prop="create_at"/>
     <el-table-column label="操作">
       <template #default="scope">
