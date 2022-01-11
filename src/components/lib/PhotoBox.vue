@@ -69,8 +69,13 @@
             </el-image>
             <el-checkbox style="z-index: 2;width: 15px;height: 15px" type="text" v-model="listBind[item.id]" class="star" icon="el-icon-star-on" @change="changeOne"></el-checkbox>
             <div class="like"  >
+              <el-button style="padding: 0;z-index: 2;" type="text" circle @click="deleteImage(item.id)">
+                <el-icon :size="25" color="red">
+                  <Delete/>
+                </el-icon>
+              </el-button>
               <el-button style="padding: 0;z-index: 2;" type="text" circle @click="collectImage(item)">
-                <el-icon size="22" color="red">
+                <el-icon :size="25" color="red">
                   <star-filled v-if="item.like" ></star-filled>
                   <star v-else></star>
                 </el-icon>
@@ -134,11 +139,12 @@
 import PhotoDetail from "./PhotoDetail.vue";
 import LikeCheckBox from "./LikeCheckBox.vue";
 import { likeImage,dislikeImages } from "../../api/system"
-import {StarFilled,Star,Grid,List} from "@element-plus/icons";
-import {deleteImages} from "../../api/image";
+import {StarFilled,Star,Grid,List,Delete} from "@element-plus/icons";
+import {deleteImage, deleteImages} from "../../api/image";
+import {ElMessage, ElMessageBox} from "element-plus";
 export default {
   name: "PhotoBox",
-  components: {LikeCheckBox, PhotoDetail, Star, StarFilled, Grid,List},
+  components: {LikeCheckBox, PhotoDetail, Star, StarFilled, Grid,List,Delete},
   props:{
     fetchImgFunc:{
       type:Function,
@@ -234,10 +240,19 @@ export default {
       this.showLikeBox = true
     },
     async deleteMany(){
+      await ElMessageBox.confirm('确定要批量删除图片吗？');
       this.handlerSelect()
       let ids = this.likeBoxVal.map(e=>e.id);
       await deleteImages(ids)
       await this.fetchImageList()
+    },
+    deleteImage(id){
+      ElMessageBox.confirm("确定要删除此图片吗？").then(async () => {
+        await deleteImage(id)
+        await this.fetchImageList()
+      }).catch(_=>{
+        ElMessage.success("取消删除")
+      })
     },
     async cancelLikeSelect(){
       this.handlerSelect()

@@ -206,7 +206,6 @@ export default {
       }).catch(_=>{
         ElMessage.success("取消删除")
       })
-
     },
     async refreshImageInfo(id){
       const {data}  = await fetchImageDetail(id)
