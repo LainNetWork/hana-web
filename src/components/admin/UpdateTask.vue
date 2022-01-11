@@ -11,7 +11,12 @@
     <el-table-column label="图片数" prop="count"/>
     <el-table-column label="下载进度" prop="remain_count">
       <template #default="scope">
-        <el-progress :text-inside="true" :stroke-width="16" :percentage="(scope.row.count - scope.row.remain_count)*100/scope.row.count" />
+        <el-progress :text-inside="true" :stroke-width="15" :percentage="(scope.row.count - scope.row.remain_count)*100/scope.row.count" />
+      </template>
+    </el-table-column>
+    <el-table-column label="处理进度" prop="not_handled_count">
+      <template #default="scope">
+        <el-progress width="50" :stroke-width="5" :percentage="Math.round((scope.row.total_pic - scope.row.not_handled_pic)*100/scope.row.count)" type="circle"></el-progress>
       </template>
     </el-table-column>
     <el-table-column label="创建时间" prop="create_at"/>
