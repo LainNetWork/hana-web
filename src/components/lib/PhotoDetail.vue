@@ -134,7 +134,7 @@ import {updateImageInfo,fetchImageDetail,deleteImage} from "../../api/image"
 import {likeAuthors} from "../../api/author"
 import {likeImage} from "../../api/system"
 import {ElMessage, ElMessageBox} from 'element-plus'
-import {StarFilled,Star, Edit, Check, Delete} from "@element-plus/icons";
+import {StarFilled,Star, Edit, Check, Delete} from "@element-plus/icons-vue";
 export default {
   name: "PhotoDetail",
   props:{

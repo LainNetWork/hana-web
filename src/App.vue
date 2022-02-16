@@ -55,7 +55,7 @@
 <script>
 
 import {computed} from "vue";
-import {PictureFilled,UploadFilled,StarFilled,GoodsFilled,Tools,DArrowLeft,DArrowRight} from "@element-plus/icons";
+import {PictureFilled,UploadFilled,StarFilled,GoodsFilled,Tools,DArrowLeft,DArrowRight} from "@element-plus/icons-vue";
 import { defineComponent } from 'vue'
 import { ElConfigProvider } from 'element-plus'
 

@@ -13,49 +13,44 @@
         </div>
       </div>
     </el-header>
-    <el-main style="padding-left: 5px;padding-right: 0">
-      <el-row>
-        <el-col :span="3">
-          <el-radio-group v-model="showType" style="width: 200px">
-            <el-radio-button label="pic">
-              <el-icon><Grid /></el-icon>
-            </el-radio-button>
-            <el-radio-button label="table">
-              <el-icon><List/></el-icon>
-            </el-radio-button>
-          </el-radio-group>
-        </el-col>
-        <el-col :span="2">
-          <el-button @click="showLikeBoxDialog">
-            <el-icon color="red">
-              <star></star>
-            </el-icon>
-            收藏
-          </el-button>
-          <el-dialog title="收藏图片" v-model="showLikeBox" show-close>
-            <LikeCheckBox :selected="likeBoxVal" v-on:beClosed="showLikeBox = false"/>
-          </el-dialog>
-        </el-col>
-        <el-col :span="2">
-          <el-button @click="cancelLikeSelect">
-            <el-icon>
-              <star-filled></star-filled>
-            </el-icon>
-            取消收藏
-          </el-button>
-        </el-col>
-        <el-col :span="2">
-          <el-button @click="deleteMany">
-            <el-icon>
-              <star-filled></star-filled>
-            </el-icon>
-            批量删除
-          </el-button>
-        </el-col>
-        <el-col :span="2">
-          <el-checkbox style="margin: 10px" v-model="selectAll" :indeterminate="indeterminate"  @change="allChange">全选</el-checkbox>
-        </el-col>
-      </el-row>
+    <div>
+      <el-radio-group v-model="showType" style="margin: 5px 0" >
+        <el-radio-button label="pic">
+          <el-icon><Grid /></el-icon>
+        </el-radio-button>
+        <el-radio-button label="table">
+          <el-icon><List/></el-icon>
+        </el-radio-button>
+      </el-radio-group>
+
+      <el-checkbox style="margin: 0 5px" v-model="selectAll" :indeterminate="indeterminate"  @change="allChange">全选</el-checkbox>
+
+      <el-dialog title="收藏图片" v-model="showLikeBox" show-close>
+        <LikeCheckBox :selected="likeBoxVal" v-on:beClosed="likeBoxClosed"/>
+      </el-dialog>
+
+      <el-button @click="cancelLikeSelect">
+        <el-icon>
+          <star-filled></star-filled>
+        </el-icon>
+        取消收藏
+      </el-button>
+
+      <el-button @click="showLikeBoxDialog">
+        <el-icon color="red">
+          <star></star>
+        </el-icon>
+        收藏
+      </el-button>
+
+      <el-button @click="deleteMany">
+        <el-icon>
+          <star-filled></star-filled>
+        </el-icon>
+        删除
+      </el-button>
+    </div>
+    <el-main style="padding-left: 5px;padding-right: 0;padding-top: 0">
       <el-row >
         <div v-if="showType === 'pic'" class="wrapper">
           <div :key="index"  v-for="(item, index) in pictures " class="imageBox" style="width: 240px;height: 160px;">
@@ -70,12 +65,12 @@
             <el-checkbox style="z-index: 2;width: 15px;height: 15px" type="text" v-model="listBind[item.id]" class="star" icon="el-icon-star-on" @change="changeOne"></el-checkbox>
             <div class="like"  >
               <el-button style="padding: 0;z-index: 2;" type="text" circle @click="deleteImage(item.id)">
-                <el-icon :size="25" color="red">
+                <el-icon :size="16" color="red">
                   <Delete/>
                 </el-icon>
               </el-button>
               <el-button style="padding: 0;z-index: 2;" type="text" circle @click="collectImage(item)">
-                <el-icon :size="25" color="red">
+                <el-icon :size="16" color="red">
                   <star-filled v-if="item.like" ></star-filled>
                   <star v-else></star>
                 </el-icon>
@@ -139,7 +134,7 @@
 import PhotoDetail from "./PhotoDetail.vue";
 import LikeCheckBox from "./LikeCheckBox.vue";
 import { likeImage,dislikeImages } from "../../api/system"
-import {StarFilled,Star,Grid,List,Delete} from "@element-plus/icons";
+import {StarFilled,Star,Grid,List,Delete} from "@element-plus/icons-vue";
 import {deleteImage, deleteImages} from "../../api/image";
 import {ElMessage, ElMessageBox} from "element-plus";
 export default {
@@ -167,7 +162,7 @@ export default {
       showDetailBox:false,
       showDetailBoxData:'',
       imageForm:{
-        like:false,
+        like:true,
         r18:false,
         taskId:this.taskId,
         keyWord:this.keyWord,
@@ -238,6 +233,10 @@ export default {
     showLikeBoxDialog(){
       this.handlerSelect()
       this.showLikeBox = true
+    },
+    likeBoxClosed() {
+      this.showLikeBox = false
+      this.fetchImageList()
     },
     async deleteMany(){
       await ElMessageBox.confirm('确定要批量删除图片吗？');

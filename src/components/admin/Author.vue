@@ -28,7 +28,7 @@
 <script>
 import { fetchAuthors, likeAuthors } from "../../api/author"
 import {defineComponent } from 'vue'
-import {Star,StarFilled} from "@element-plus/icons";
+import {Star,StarFilled} from "@element-plus/icons-vue";
 
 export default defineComponent({
   name: "Author",

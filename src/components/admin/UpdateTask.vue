@@ -39,7 +39,7 @@
 
 <script>
 import {fetchTaskList} from "../../api/task"
-import {Refresh} from "@element-plus/icons";
+import {Refresh} from "@element-plus/icons-vue";
 export default {
   name: "UpdateTask",
   components:{Refresh},
