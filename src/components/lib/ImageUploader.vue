@@ -1,6 +1,11 @@
 <template>
   <div >
-    <el-button @click="openUploadBox">上传<i class="el-icon-upload el-icon--right"></i></el-button>
+    <el-button @click="openUploadBox">
+      上传
+      <el-icon class="el-icon--right">
+        <upload />
+      </el-icon>
+    </el-button>
     <el-dialog
         title="新增图片"
         v-model="showUploadBox"
@@ -86,9 +91,11 @@
 <script>
 import { searchPixivByPid } from "../../api/pixiv";
 import { uploadImage } from "../../api/image"
+import {Upload} from "@element-plus/icons-vue";
 export default {
   name: "ImageUploader",
   emits:["OnClose"],
+  components:{Upload},
   data(){
     return {
       form:{

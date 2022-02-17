@@ -1,27 +1,14 @@
 <template>
   <el-container>
-    <el-header height="100px" >
+    <el-header height="100px" style="margin-bottom: 20px">
       <div style="padding-top: 20px">
         <el-input placeholder="搜索画作" style="width: 500px" v-model="imageForm.keyWord" @keypress="keyPressSearch"/>
-        <div style="display: inline-block;margin-left: 100px">
-          <slot></slot>
-        </div>
         <div>
           <el-radio v-model="imageForm.like" :label="true">收藏</el-radio>
           <el-radio v-model="imageForm.like" :label="false">未收藏</el-radio>
           <el-switch v-model="imageForm.r18" name="R18" active-text="ON" inactive-text="R18-OFF" @change="fetchImageList"/>
         </div>
       </div>
-    </el-header>
-    <div>
-      <el-radio-group v-model="showType" style="margin: 5px 0" >
-        <el-radio-button label="pic">
-          <el-icon><Grid /></el-icon>
-        </el-radio-button>
-        <el-radio-button label="table">
-          <el-icon><List/></el-icon>
-        </el-radio-button>
-      </el-radio-group>
 
       <el-checkbox style="margin: 0 5px" v-model="selectAll" :indeterminate="indeterminate"  @change="allChange">全选</el-checkbox>
 
@@ -49,9 +36,20 @@
         </el-icon>
         删除
       </el-button>
-    </div>
-    <el-main style="padding-left: 5px;padding-right: 0;padding-top: 0">
-      <el-row >
+      <div style="display: inline-block;margin-left: 100px">
+        <slot></slot>
+      </div>
+      <el-radio-group v-model="showType" style="float: right" >
+        <el-radio-button label="pic">
+          <el-icon><Grid /></el-icon>
+        </el-radio-button>
+        <el-radio-button label="table">
+          <el-icon><List/></el-icon>
+        </el-radio-button>
+      </el-radio-group>
+    </el-header>
+    <el-main>
+      <el-row>
         <div v-if="showType === 'pic'" class="wrapper">
           <div :key="index"  v-for="(item, index) in pictures " class="imageBox" style="width: 240px;height: 160px;">
             <el-image :hide-on-click-modal="true" fit="contain" class="image"
@@ -78,8 +76,8 @@
             </div>
           </div>
         </div>
-        <el-scrollbar v-if="showType === 'table'" height="700px">
-          <el-table ref="multipleTable" height="700px"  :data="pictures" @selection-change="selectionChange">
+        <el-scrollbar v-if="showType === 'table'" height="600px">
+          <el-table ref="multipleTable" height="600px"  :data="pictures" @selection-change="selectionChange">
             <el-table-column
                 type="selection"
                 width="55">
@@ -115,18 +113,15 @@
       <el-dialog v-model="showDetailBox" width="600px">
         <PhotoDetail :id="showDetailBoxData" v-on:isDelete="isDelete"/>
       </el-dialog>
-    </el-main>
-    <el-footer>
-      <el-pagination
-          style="float: right"
-          background
-          :current-page="imageForm.pageNum"
-          @current-change="changePage"
-          layout="total, prev, pager, next, jumper"
-          :page-size="imageForm.pageSize"
-          :total="total">
+      <div style="height: 60px"></div>
+      <el-pagination class="pagination-box"
+                     :current-page="imageForm.pageNum"
+                     @current-change="changePage"
+                     layout="total, prev, pager, next, jumper"
+                     :page-size="imageForm.pageSize"
+                     :total="total">
       </el-pagination>
-    </el-footer>
+    </el-main>
   </el-container>
 </template>
 
@@ -183,15 +178,15 @@ export default {
   created() {
     this.fetchImageList()
   },
-  inject:['isCollapse'],
+  // inject:['isCollapse'],
   watch:{
-    isCollapse:{
-      immediate: true,
-      deep: true,
-      handler(){
-        this.fetchImageList()
-      }
-    },
+    // isCollapse:{
+    //   immediate: true,
+    //   deep: true,
+    //   handler(){
+    //     this.fetchImageList()
+    //   }
+    // },
     keyWord:function (newVal){
       this.imageForm.keyWord = newVal
       this.fetchImageList()
@@ -300,11 +295,11 @@ export default {
       await this.fetchImageList()
     },
     async fetchImageList(){
-      if (this.isCollapse.value.isCollapse) {
-        this.imageForm.pageSize=28
-      }else {
-        this.imageForm.pageSize=24
-      }
+      // if (this.isCollapse.value.isCollapse) {
+      //   this.imageForm.pageSize=28
+      // }else {
+      //   this.imageForm.pageSize=24
+      // }
       const { data } = await this.fetchImgFunc(this.imageForm)
       this.pictures = data.content
       this.total = data.total
@@ -332,6 +327,8 @@ export default {
   grid-column-gap: 10px;
   grid-template-columns: repeat(auto-fill, 240px);
   grid-template-rows: repeat(auto-fill, 160px);
+  justify-content: center;
+  align-content: center;
 }
 
 .imageBox {
@@ -340,8 +337,21 @@ export default {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: repeat(5, 1fr);
-  grid-column-gap: 0px;
-  grid-row-gap: 0px;
+  grid-column-gap: 0;
+  grid-row-gap: 0;
+}
+
+.pagination-box{
+  z-index: 9999;
+  height:50px;
+  width: 100%;
+  position:absolute;
+  padding: 5px 5px 5px 20px;
+  border-radius: 25px;
+  box-shadow: -2px 2px 5px rgba(0, 0, 0, 0.30);
+  left: 50%;
+  bottom: 10px;
+  background-color: white
 }
 
 .star{ margin:5px;grid-area: 1 / 1 / 2 / 2; }
