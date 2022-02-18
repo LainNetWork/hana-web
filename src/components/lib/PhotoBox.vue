@@ -9,27 +9,22 @@
           <el-switch v-model="imageForm.r18" name="R18" active-text="ON" inactive-text="R18-OFF" @change="fetchImageList"/>
         </div>
       </div>
-
       <el-checkbox style="margin: 0 5px" v-model="selectAll" :indeterminate="indeterminate"  @change="allChange">全选</el-checkbox>
-
       <el-dialog title="收藏图片" v-model="showLikeBox" show-close>
         <LikeCheckBox :selected="likeBoxVal" v-on:beClosed="likeBoxClosed"/>
       </el-dialog>
-
       <el-button @click="cancelLikeSelect">
         <el-icon>
           <star-filled></star-filled>
         </el-icon>
         取消收藏
       </el-button>
-
       <el-button @click="showLikeBoxDialog">
         <el-icon color="red">
           <star></star>
         </el-icon>
         收藏
       </el-button>
-
       <el-button @click="deleteMany">
         <el-icon>
           <star-filled></star-filled>
@@ -111,7 +106,7 @@
         </el-scrollbar>
       </el-row>
       <el-dialog v-model="showDetailBox" width="600px">
-        <PhotoDetail :id="showDetailBoxData" v-on:isDelete="isDelete"/>
+        <PhotoDetail :id="showDetailBoxData" v-on:isDelete="isDelete" v-on:update="fetchImageList"/>
       </el-dialog>
       <div style="height: 60px"></div>
       <el-pagination class="pagination-box"
@@ -197,22 +192,23 @@ export default {
   },
   methods:{
     changeOne(){
-      let flag = false //是否全部选中
-      let notFlag = false //是否未全部选中
-      for(let item in this.listBind){
-        if(this.listBind[item]){
-          flag= true
-        }else {
-          notFlag = true
+      let select = 0
+      for(let i in this.listBind){
+        if(this.listBind[i]){
+          select++
         }
       }
-      if (flag) {
-        this.selectAll = true
-      }
-      if (notFlag) {
+      if(select === 0){
         this.selectAll = false
+        this.indeterminate = false;
+      }else if (Object.getOwnPropertyNames(this.listBind).length !== select) {
+        this.selectAll = false
+        this.indeterminate = true
+      }else {
+        this.selectAll = true
+        this.indeterminate = false
       }
-      this.indeterminate = flag
+
     },
     allChange(val){
       this.indeterminate = false
@@ -295,11 +291,6 @@ export default {
       await this.fetchImageList()
     },
     async fetchImageList(){
-      // if (this.isCollapse.value.isCollapse) {
-      //   this.imageForm.pageSize=28
-      // }else {
-      //   this.imageForm.pageSize=24
-      // }
       const { data } = await this.fetchImgFunc(this.imageForm)
       this.pictures = data.content
       this.total = data.total
@@ -307,6 +298,8 @@ export default {
       for (let item of this.pictures){
         this.listBind[item.id] = false
       }
+      this.indeterminate = false
+      this.selectAll = false
     },
     async keyPressSearch(event){
       if (event.keyCode === 13){

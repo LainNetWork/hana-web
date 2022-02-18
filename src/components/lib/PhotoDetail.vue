@@ -146,7 +146,7 @@ export default {
   components: {
     StarFilled,Star,Edit,Check,Delete
   },
-  emits:["isDelete"],
+  emits:["isDelete","update"],
   data(){
     return {
       storageTypeMap: {
@@ -191,6 +191,7 @@ export default {
     async collectImage(){
       this.imageData.like = !this.imageData.like
       await likeImage(this.id,this.imageData.like)
+      this.$emit("update")
     },
     async collectAuthor(){
       await likeAuthors({
