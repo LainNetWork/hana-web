@@ -335,7 +335,7 @@ export default {
 }
 
 .pagination-box{
-  z-index: 9999;
+  z-index: 2040;
   height:50px;
   width: 100%;
   position:absolute;
