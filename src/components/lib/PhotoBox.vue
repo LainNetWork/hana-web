@@ -57,7 +57,7 @@
             </el-image>
             <el-checkbox style="z-index: 2;width: 15px;height: 15px" type="text" v-model="listBind[item.id]" class="star" icon="el-icon-star-on" @change="changeOne"></el-checkbox>
             <div class="like"  >
-              <el-button style="padding: 0;z-index: 2;" type="text" circle @click="deleteImage(item.id)">
+              <el-button style="padding: 0;z-index: 2;" type="text" circle @click="deleteOneImage(item.id)">
                 <el-icon :size="16" color="red">
                   <Delete/>
                 </el-icon>
@@ -120,19 +120,22 @@
   </el-container>
 </template>
 
-<script>
+<script lang="ts">
 import PhotoDetail from "./PhotoDetail.vue";
 import LikeCheckBox from "./LikeCheckBox.vue";
 import { likeImage,dislikeImages } from "../../api/system"
 import {StarFilled,Star,Grid,List,Delete} from "@element-plus/icons-vue";
-import {deleteImage, deleteImages} from "../../api/image";
+import {deleteImage, deleteImages, ImageInfo} from "../../api/image";
 import {ElMessage, ElMessageBox} from "element-plus";
-export default {
+import {defineComponent, onMounted, PropType, reactive, toRefs, watch} from "vue";
+import {PageableMO} from "../../types/common";
+
+export default defineComponent({
   name: "PhotoBox",
   components: {LikeCheckBox, PhotoDetail, Star, StarFilled, Grid,List,Delete},
   props:{
     fetchImgFunc:{
-      type:Function,
+      type:Function as PropType<(req:any)=>Promise<PageableMO<ImageInfo>>>,
       required:true
     },
     keyWord:{
@@ -142,174 +145,192 @@ export default {
       type:String,
     }
   },
-  data(){
-    return {
+  setup(props){
+    const state = reactive({
       storageTypeMap: {
         "LOCAL": "本地存储",
         "TENXUN": "腾讯云"
-      },
+      } as {[key:string]:string},
       showImageDetail:false,
       showDetailBox:false,
       showDetailBoxData:'',
       imageForm:{
         like:true,
         r18:false,
-        taskId:this.taskId,
-        keyWord:this.keyWord,
+        taskId:props.taskId,
+        keyWord:props.keyWord,
         pageSize:24,
         pageNum:1,
       },
       selectAll:false,
       indeterminate:false,
-      listBind:{}, //图片框模式下绑定勾选状态
+      listBind:{} as {[key:string]:boolean}, //图片框模式下绑定勾选状态
       showType:'pic',
       showLikeBox:false,
-      likeBoxVal:[],
-      pictures: [],
-      selections: [],
+      likeBoxVal:[] as [] as {id:string,url:string}[],
+      pictures: [] as ImageInfo[],
+      selections: [] as {id:string,url:string}[],
       total:0
-    }
-  },
-  created() {
-    this.fetchImageList()
-  },
-  // inject:['isCollapse'],
-  watch:{
-    // isCollapse:{
-    //   immediate: true,
-    //   deep: true,
-    //   handler(){
-    //     this.fetchImageList()
-    //   }
-    // },
-    keyWord:function (newVal){
-      this.imageForm.keyWord = newVal
-      this.fetchImageList()
-    },
-    "imageForm.like":function (){
-      this.fetchImageList()
-    }
-  },
-  methods:{
-    changeOne(){
+    })
+
+
+    const changeOne = ()=>{
       let select = 0
-      for(let i in this.listBind){
-        if(this.listBind[i]){
+      for(let i in state.listBind){
+        if(state.listBind[i]){
           select++
         }
       }
       if(select === 0){
-        this.selectAll = false
-        this.indeterminate = false;
-      }else if (Object.getOwnPropertyNames(this.listBind).length !== select) {
-        this.selectAll = false
-        this.indeterminate = true
+        state.selectAll = false
+        state.indeterminate = false;
+      }else if (Object.getOwnPropertyNames(state.listBind).length !== select) {
+        state.selectAll = false
+        state.indeterminate = true
       }else {
-        this.selectAll = true
-        this.indeterminate = false
+        state.selectAll = true
+        state.indeterminate = false
       }
-
-    },
-    allChange(val){
-      this.indeterminate = false
-      for (let item of this.pictures){
-        this.listBind[item.id] = val
+    }
+    const allChange = (val:any)=>{
+      state.indeterminate = false
+      for (let item of state.pictures){
+        state.listBind[item.id] = val
       }
-    },
-    async collectImage(row){
+    }
+    const collectImage = async (row:any) =>{
       row.like = !row.like
       await likeImage(row.id,row.like)
-      await this.fetchImageList()
-    },
-    showLikeBoxDialog(){
-      this.handlerSelect()
-      this.showLikeBox = true
-    },
-    likeBoxClosed() {
-      this.showLikeBox = false
-      this.fetchImageList()
-    },
-    async deleteMany(){
+      await fetchImageList()
+    }
+    const showLikeBoxDialog= ()=>{
+      handlerSelect()
+      state.showLikeBox = true
+    }
+    const likeBoxClosed = () =>{
+      state.showLikeBox = false
+      fetchImageList()
+    }
+    const deleteMany = async ()=>{
       await ElMessageBox.confirm('确定要批量删除图片吗？');
-      this.handlerSelect()
-      let ids = this.likeBoxVal.map(e=>e.id);
+      handlerSelect()
+      let ids = state.likeBoxVal.map(e=>e.id);
       await deleteImages(ids)
-      await this.fetchImageList()
-    },
-    deleteImage(id){
+      await fetchImageList()
+    }
+    const deleteOneImage = (id:any)=>{
       ElMessageBox.confirm("确定要删除此图片吗？").then(async () => {
         await deleteImage(id)
-        await this.fetchImageList()
+        await fetchImageList()
       }).catch(_=>{
         ElMessage.success("取消删除")
       })
-    },
-    async cancelLikeSelect(){
-      this.handlerSelect()
-      let ids = this.likeBoxVal.map(e=>e.id);
+    }
+    const cancelLikeSelect = async ()=>{
+      handlerSelect()
+      let ids = state.likeBoxVal.map(e=>e.id);
       await dislikeImages({
         ids
       })
-      await this.fetchImageList()
-    },
-    handlerSelect(){
-      let selected = []
-      if(this.showType === "table"){
-        this.likeBoxVal = this.selections
+      await fetchImageList()
+    }
+    const handlerSelect = ()=>{
+      let selected = [] as {id:string,url:string}[]
+      if(state.showType === "table"){
+        state.likeBoxVal = state.selections
       }else {
-        for(let item in this.listBind){
-          if(this.listBind[item] === true){
+        for(let item in state.listBind){
+          if(state.listBind[item]){
             selected.push({
               id:item,
-              url:this.pictures.filter(i=>i.id === item)[0].urls.mini
+              url:state.pictures.filter(i=>i.id === item)[0].urls.mini
             })
           }
         }
-        this.likeBoxVal = selected
+        state.likeBoxVal = selected
       }
-    },
-    selectionChange(val){
-      let array = [];
-      val.forEach( e =>{
+    }
+    const selectionChange = (val:any)=>{
+      let array: { id: any; url: any; }[] = [];
+      val.forEach( (e: { id: any; urls: { mini: any; }; }) =>{
         array.push({
           id:e.id,
           url:e.urls.mini
         })
       })
-      this.selections = array;
-    },
-    isDelete(){
-      this.showDetailBox = false
-      this.fetchImageList()
-    },
-    openImageDetailBox(id){
-      this.showDetailBoxData = id
-      this.showDetailBox = true
-    },
-    async changePage(val){
-      this.imageForm.pageNum = val
-      await this.fetchImageList()
-    },
-    async fetchImageList(){
-      const { data } = await this.fetchImgFunc(this.imageForm)
-      this.pictures = data.content
-      this.total = data.total
-      this.listBind = {}
-      for (let item of this.pictures){
-        this.listBind[item.id] = false
+      state.selections = array;
+    }
+    const isDelete = ()=>{
+      state.showDetailBox = false
+      fetchImageList()
+    }
+    const openImageDetailBox = (id:any)=>{
+      state.showDetailBoxData = id
+      state.showDetailBox = true
+    }
+    const changePage = async (val:any) => {
+      state.imageForm.pageNum = val
+      await fetchImageList()
+    }
+    const fetchImageList = async ()=>{
+      const page = await props.fetchImgFunc(state.imageForm)
+      state.pictures = page.content
+      state.total = page.total
+      state.listBind = {} as {[key: string]:boolean}
+      for (let item of state.pictures){
+        state.listBind[item.id] = false
       }
-      this.indeterminate = false
-      this.selectAll = false
-    },
-    async keyPressSearch(event){
+      state.indeterminate = false
+      state.selectAll = false
+    }
+    const keyPressSearch = async (event:any) =>{
       if (event.keyCode === 13){
-        await this.fetchImageList()
+        await fetchImageList()
       }
-    },formatTable(row, column, cellValue, index){
-      return this.storageTypeMap[row.storageType]
+    }
+    const formatTable = (row: { storageType: string | number; })=>{
+      return state.storageTypeMap[row.storageType]
+    }
+    onMounted(()=>{
+      fetchImageList()
+    })
+    watch(()=>props.keyWord,(newVal)=>{
+          state.imageForm.keyWord = newVal
+          fetchImageList()
+    })
+    watch(()=>state.imageForm.like,(newVal)=>{
+      fetchImageList()
+    })
+    return {
+      ...toRefs(state),
+      keyPressSearch,
+      changePage,
+      openImageDetailBox,
+      isDelete,
+      selectionChange,
+      cancelLikeSelect,
+      formatTable,
+      deleteOneImage,
+      deleteMany,
+      likeBoxClosed,
+      showLikeBoxDialog,
+      collectImage,
+      allChange,
+      changeOne,
+      fetchImageList
     }
   },
-}
+  // inject:['isCollapse'],
+  // watch:{
+  //   keyWord:function (newVal){
+  //     this.imageForm.keyWord = newVal
+  //     this.fetchImageList()
+  //   },
+  //   "imageForm.like":function (){
+  //     this.fetchImageList()
+  //   }
+  // },
+})
 </script>
 
 <style scoped>

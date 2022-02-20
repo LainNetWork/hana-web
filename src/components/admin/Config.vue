@@ -44,14 +44,18 @@
   </el-form>
 </template>
 
-<script>
-import {reactive, toRefs,onMounted, defineComponent} from 'vue'
-import { fetchSystemConfig,saveConfig,generateKey} from '../../api/system'
+<script lang="ts">
+import {defineComponent, onMounted, reactive, toRefs} from 'vue'
+import {fetchSystemConfig, generateKey, saveConfig, SystemConfig} from '../../api/system'
 import {ElMessage} from "element-plus";
+
+export interface SystemConfigData {
+  config:SystemConfig
+}
 export default defineComponent({
   name: "Config",
   setup(){
-    const state = reactive({
+    const state = reactive<SystemConfigData>({
       config: {
         proxy: '',
         projectBaseUrl: '',
@@ -62,11 +66,10 @@ export default defineComponent({
         tencentOssBaseUrl:'',
         tencentOssSecretID:'',
         tencentOssSecretKey:'',
-      }
+      },
     })
     const getSysConfig = async ()=>{
-      const { data } = await fetchSystemConfig()
-      state.config = data
+      state.config = await fetchSystemConfig()
     }
     onMounted(()=>{
       getSysConfig()
