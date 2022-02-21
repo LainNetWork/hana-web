@@ -19,7 +19,7 @@
             <Check/>
           </el-icon>
         </el-button>
-        <el-button circle type="danger" @click="deleteImage">
+        <el-button circle type="danger" @click="deleteImageData">
           <el-icon>
             <Delete/>
           </el-icon>
@@ -103,25 +103,7 @@
             <p style="white-space:nowrap">图片标签:</p>
           </template>
           <div style="height: 100px;overflow-y: scroll">
-            <el-tag style="margin: 2px"
-                    :key="tag"
-                    v-for="tag in imageForm.tags"
-                    closable
-                    :disable-transitions="false"
-                    @close="handleClose(tag)">
-              {{ tag }}
-            </el-tag>
-            <el-input
-                class="input-new-tag"
-                v-if="inputVisible"
-                v-model="inputValue"
-                ref="saveTagInput"
-                size="small"
-                @keyup.enter.native="handleInputConfirm"
-                @blur="handleInputConfirm"
-            >
-            </el-input>
-            <el-button v-else class="button-new-tag" size="small" @click="showInput">+</el-button>
+            <DynamicTags v-model="imageForm.tags"></DynamicTags>
           </div>
         </el-descriptions-item>
       </div>
@@ -129,121 +111,99 @@
   </el-row>
 </template>
 
-<script>
+<script lang="ts" setup>
 import {updateImageInfo,fetchImageDetail,deleteImage} from "../../api/image"
 import {likeAuthors} from "../../api/author"
 import {likeImage} from "../../api/system"
 import {ElMessage, ElMessageBox} from 'element-plus'
 import {StarFilled,Star, Edit, Check, Delete} from "@element-plus/icons-vue";
-export default {
-  name: "PhotoDetail",
-  props:{
-    id:{
-      type:String,
-      required:true
-    }
-  },
-  components: {
-    StarFilled,Star,Edit,Check,Delete
-  },
-  emits:["isDelete","update"],
-  data(){
-    return {
-      storageTypeMap: {
-        "LOCAL": "本地存储",
-        "TENXUN": "腾讯云"
-      },
-      inputVisible:false,
-      inputValue:'',
-      imageData:{
-        urls:{
-          regular:'',
-          original:''
-        },
-        authorLiked: false
-      },
-      imageForm: {
-        pid:'',
-        title:'',
-        author:'',
-        authorId:'',
-        tags:[]
-      },
-      editMode:false
-    }
-  },
-  created() {
-    this.refreshImageInfo(this.id)
-  },
-  watch:{
-    id(newVal){
-      this.refreshImageInfo(newVal)
-      this.editMode = false
-    }
-  },
-  methods:{
-    async jumpToSearch(authorId){
-      let routeUrl = this.$router.resolve({
-        path: "/keyWord/" + authorId
-      });
-      window.open(routeUrl .href, '_blank');
-    },
-    async collectImage(){
-      this.imageData.like = !this.imageData.like
-      await likeImage(this.id,this.imageData.like)
-      this.$emit("update")
-    },
-    async collectAuthor(){
-      await likeAuthors({
-        uid:this.imageData.authorId,
-        like:!this.imageData.authorLiked
-      })
-      await this.refreshImageInfo(this.id)
-    },
-    deleteImage(){
-      ElMessageBox.confirm("确定要删除此图片吗？").then(async _ => {
-        await deleteImage(this.id)
-        this.$emit("isDelete")
-      }).catch(_=>{
-        ElMessage.success("取消删除")
-      })
-    },
-    async refreshImageInfo(id){
-      const {data}  = await fetchImageDetail(id)
-      this.imageData = data
-      this.imageForm.pid = data.pid
-      this.imageForm.title = data.title
-      this.imageForm.author = data.author
-      this.imageForm.authorId = data.authorId
-      this.imageForm.tags = data.tags
-    },
-    showEditBox(){
-      this.editMode = true
-    },
-    async saveEdit(){
-      await updateImageInfo(this.id,this.imageForm)
-      this.editMode = false
-      await this.refreshImageInfo(this.id)
-    },
-    handleClose(tag) {
-      this.imageForm.tags.splice(this.imageForm.tags.indexOf(tag), 1);
-    },
-    showInput() {
-      this.inputVisible = true;
-      this.$nextTick(_ => {
-        this.$refs.saveTagInput.$refs.input.focus();
-      });
-    },
-    handleInputConfirm() {
-      let inputValue = this.inputValue;
-      if (inputValue) {
-        this.imageForm.tags.push(inputValue);
-      }
-      this.inputVisible = false;
-      this.inputValue = '';
-    }
+import {defineComponent, nextTick, onMounted, reactive, ref, toRefs, watch} from "vue";
+import {useRouter} from "vue-router";
+import DynamicTags from "./DynamicTags.vue";
+
+
+const props = defineProps({
+  id:{
+    type:String,
+    required:true
   }
+});
+
+const emit = defineEmits(["isDelete","update"]);
+const storageTypeMap = {
+  "LOCAL": "本地存储",
+  "TENXUN": "腾讯云"
 }
+const inputVisible = ref(false)
+const inputValue = ref('')
+const imageData = ref({
+  authorId:'',
+  urls:{
+    regular:'',
+    original:''
+  },
+  authorLiked: false,
+  like:false
+})
+const imageForm = ref({
+  pid:'',
+  title:'',
+  author:'',
+  authorId:'',
+  tags:[] as string[]
+})
+const editMode = ref(false)
+const router = useRouter();
+const jumpToSearch = async (authorId:string)=>{
+  let routeUrl = router.resolve({
+    path: "/keyWord/" + authorId
+  });
+  window.open(routeUrl .href, '_blank');
+}
+const collectImage = async ()=>{
+  imageData.value.like = !imageData.value.like
+  await likeImage(props.id,imageData.value.like)
+  emit("update")
+}
+const collectAuthor = async()=>{
+  await likeAuthors({
+    uid:imageData.value.authorId,
+    like:!imageData.value.authorLiked
+  })
+  await refreshImageInfo(props.id)
+}
+const showEditBox = ()=>{
+  editMode.value = true
+}
+const saveEdit = async ()=>{
+  await updateImageInfo(props.id,imageForm.value)
+  editMode.value = false
+  await refreshImageInfo(props.id)
+}
+const deleteImageData = ()=>{
+  ElMessageBox.confirm("确定要删除此图片吗？").then(async _ => {
+    await deleteImage(props.id)
+    emit("isDelete")
+  }).catch(_=>{
+    ElMessage.success("取消删除")
+  })
+}
+const refreshImageInfo = async (id:string)=>{
+  const data  = await fetchImageDetail(id)
+  imageData.value = data
+  imageForm.value.pid = data.pid
+  imageForm.value.title = data.title
+  imageForm.value.author = data.author
+  imageForm.value.authorId = data.authorId
+  imageForm.value.tags = data.tags
+}
+watch(()=>props.id,(newVal:string)=>{
+  refreshImageInfo(newVal)
+  editMode.value = false
+})
+onMounted(()=>{
+  refreshImageInfo(props.id)
+})
 </script>
 
 <style scoped>

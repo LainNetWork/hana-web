@@ -29,12 +29,12 @@
               <span>采集任务</span>
             </template>
           </el-menu-item>
-          <el-menu-item index="/author">
-            <template #default>
-              <el-icon><goods-filled /></el-icon>
-              <span>画师广场</span>
-            </template>
-          </el-menu-item>
+<!--          <el-menu-item index="/author">-->
+<!--            <template #default>-->
+<!--              <el-icon><goods-filled /></el-icon>-->
+<!--              <span>画师广场</span>-->
+<!--            </template>-->
+<!--          </el-menu-item>-->
           <el-menu-item index="/config">
             <template #default>
               <el-icon><tools /></el-icon>

@@ -25,7 +25,7 @@
 
 </template>
 
-<script>
+<script lang="ts">
 import { fetchAuthors, likeAuthors } from "../../api/author"
 import {defineComponent } from 'vue'
 import {Star,StarFilled} from "@element-plus/icons-vue";
@@ -54,17 +54,17 @@ export default defineComponent({
     }
   },
   methods:{
-    jumpToGallery(id){
+    jumpToGallery(id:string){
       let routeUrl = this.$router.resolve({
         path: "/keyWord/" + id
       });
       window.open(routeUrl .href, '_blank');
     },
-    changePage(page){
+    changePage(page:number){
       this.formData.pageNum = page
       this.fetchAuthorList()
     },
-    async likeAuthor(item){
+    async likeAuthor(item:any){
       await likeAuthors({
         uid:item.uid,
         like:!item.like

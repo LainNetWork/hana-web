@@ -18,7 +18,7 @@ $http.interceptors.response.use((response) =>{
     if(response.data.msg) {
         ElMessage.success(response.data.msg)
     }
-    return response.data
+    return response.data.data
 },(error) => {
     const { response } = error
     if (response === undefined) {

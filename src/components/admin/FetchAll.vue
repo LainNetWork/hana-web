@@ -22,57 +22,55 @@
   </div>
 </template>
 
-<script>
-import { fetchImagesByUid } from "../../api/pixiv"
-import { fetchImages } from "../../api/pixiv"
-import {ElMessage} from "element-plus";
-export default {
+<script lang="ts">
+import {fetchImages, fetchPidsByUid} from "../../api/pixiv"
+import {defineComponent, reactive, toRefs, watch} from "vue";
+
+export default defineComponent({
   name: "FetchAll",
-  data(){
-    return {
+  setup(){
+    const state = reactive({
       searchForm:{
         uid:''
       },
       storageType:'TENXUN',
       like:false,
-      data:[]
-    }
-  },
-  watch:{
-    "searchForm.uid":function () {
-      this.reset()
-    }
-  },
-  methods:{
-    async search(){
-      if (this.searchForm.uid === '') {
+      data:[] as string[]
+    })
+    const search = async ()=>{
+      if (state.searchForm.uid === '') {
         return
       }
-      const { data } = await fetchImagesByUid(this.searchForm.uid)
-      this.data = data
-    },async fetch(){
-      if (this.data.length === 0) {
+      state.data = await fetchPidsByUid(state.searchForm.uid)
+    }
+    const fetch = async()=>{
+      if (state.data.length === 0) {
         return
       }
-      const pids = []
-      this.data.forEach(e=>{
-        pids.push(e.id)
+      const pids = [] as string[]
+      state.data.forEach(e=>{
+        pids.push(e)
       })
       const form = {
-        storageType: this.storageType,
+        storageType: state.storageType,
         pids: pids,
-        authorId: this.data[0].userId,
-        like: this.like
+        authorId: state.searchForm.uid,
+        like: state.like
       }
       await fetchImages(form)
-      this.data = []
-      this.uid = ''
-    },async reset() {
-      this.data = []
-      this.uid = ''
+      reset()
+    }
+    const reset = ()=>{
+      state.data = []
+      state.searchForm.uid = ''
+    }
+    return {
+      ...toRefs(state),
+      search,
+      fetch
     }
   }
-}
+})
 </script>
 
 <style scoped>

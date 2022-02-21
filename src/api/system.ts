@@ -1,18 +1,29 @@
 import $http from "../config/axiosConfig";
 
-export async function login(account: any, pass:any) {
-    const { data } = await $http.post("/api/system/login", {
+export async function login(account: string, pass:string) {
+    const jwt = await $http.post<any,string>("/api/system/login", {
         account: account,
         password:pass
     });
-    window.localStorage.setItem("token", data);
+    window.localStorage.setItem("token", jwt);
+}
+export interface SystemConfig {
+    proxy: string
+    projectBaseUrl: string
+    pixivCookie:string
+    systemToken:string
+    adminAccount:string
+    adminPassword:string
+    tencentOssBaseUrl:string
+    tencentOssSecretID:string
+    tencentOssSecretKey:string
 }
 
-export function fetchSystemConfig() {
+export function fetchSystemConfig(): Promise<SystemConfig>{
     return $http.get("/hana/system/config");
 }
 
-export function saveConfig(data: any) {
+export function saveConfig(data: SystemConfig) {
     return $http.post("/hana/system/config",data);
 }
 
