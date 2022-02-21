@@ -25,16 +25,29 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, nextTick,} from 'vue'
+import {ref, nextTick, PropType, watch, onMounted,} from 'vue'
 import type { ElInput } from 'element-plus'
+import config from "../admin/Config.vue";
 
 const inputValue = ref('')
 const dynamicTags = ref([] as string[])
 const inputVisible = ref(false)
 const InputRef = ref<InstanceType<typeof ElInput>>()
-const emits = defineEmits(['modelValue']);
-
-
+const emits = defineEmits(['update:modelValue']);
+const props = defineProps(
+    {
+      modelValue:{
+        required:true,
+        type:Array as PropType<string[]>
+      }
+    }
+)
+onMounted(()=>{
+  dynamicTags.value = props.modelValue
+})
+watch(()=>props.modelValue,(newVal)=>{
+  dynamicTags.value = newVal
+})
 const handleClose = (tag: string) => {
   dynamicTags.value.splice(dynamicTags.value.indexOf(tag), 1)
 }
@@ -52,6 +65,6 @@ const handleInputConfirm = () => {
   }
   inputVisible.value = false
   inputValue.value = ''
-  emits('modelValue',dynamicTags)
+  emits('update:modelValue',dynamicTags)
 }
 </script>

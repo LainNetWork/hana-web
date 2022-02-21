@@ -31,7 +31,15 @@ export async function fetchImageList(request: any): Promise<PageableMO<ImageInfo
     return promise
 }
 
-export function updateImageInfo(id: any,request: any){
+export interface ImageInfoUpdateForm {
+    pid:string,
+    title:string,
+    author:string,
+    authorId:string,
+    tags:string[]
+}
+
+export function updateImageInfo(id: any,request: ImageInfoUpdateForm){
     return $http.post(`/hana/image/update/${id}`,request);
 }
 export function fetchImageDetail(id: string) : Promise<ImageInfo>{
