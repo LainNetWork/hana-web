@@ -19,7 +19,7 @@
             <Check/>
           </el-icon>
         </el-button>
-        <el-button circle type="danger" @click="deleteImage">
+        <el-button circle type="danger" @click="deleteImageData">
           <el-icon>
             <Delete/>
           </el-icon>
@@ -129,13 +129,15 @@
   </el-row>
 </template>
 
-<script>
+<script lang="ts">
 import {updateImageInfo,fetchImageDetail,deleteImage} from "../../api/image"
 import {likeAuthors} from "../../api/author"
 import {likeImage} from "../../api/system"
 import {ElMessage, ElMessageBox} from 'element-plus'
 import {StarFilled,Star, Edit, Check, Delete} from "@element-plus/icons-vue";
-export default {
+import {defineComponent, nextTick, reactive} from "vue";
+import {useRouter} from "vue-router";
+export default defineComponent({
   name: "PhotoDetail",
   props:{
     id:{
@@ -147,8 +149,8 @@ export default {
     StarFilled,Star,Edit,Check,Delete
   },
   emits:["isDelete","update"],
-  data(){
-    return {
+  setup(props,{emit}){
+    const state = reactive({
       storageTypeMap: {
         "LOCAL": "本地存储",
         "TENXUN": "腾讯云"
@@ -156,11 +158,13 @@ export default {
       inputVisible:false,
       inputValue:'',
       imageData:{
+        authorId:'',
         urls:{
           regular:'',
           original:''
         },
-        authorLiked: false
+        authorLiked: false,
+        like:false
       },
       imageForm: {
         pid:'',
@@ -170,6 +174,71 @@ export default {
         tags:[]
       },
       editMode:false
+    })
+
+    const router = useRouter();
+    const jumpToSearch = async (authorId:string)=>{
+      let routeUrl = router.resolve({
+        path: "/keyWord/" + authorId
+      });
+      window.open(routeUrl .href, '_blank');
+    }
+    const collectImage = async ()=>{
+      state.imageData.like = !state.imageData.like
+      await likeImage(props.id,state.imageData.like)
+      emit("update")
+    }
+    const collectAuthor = async()=>{
+      await likeAuthors({
+        uid:state.imageData.authorId,
+        like:!state.imageData.authorLiked
+      })
+      await refreshImageInfo(props.id)
+    }
+    const deleteImageData = ()=>{
+      ElMessageBox.confirm("确定要删除此图片吗？").then(async _ => {
+        await deleteImage(props.id)
+        emit("isDelete")
+      }).catch(_=>{
+        ElMessage.success("取消删除")
+      })
+    }
+    const refreshImageInfo = async (id)=>{
+      const {data}  = await fetchImageDetail(id)
+      this.imageData = data
+      this.imageForm.pid = data.pid
+      this.imageForm.title = data.title
+      this.imageForm.author = data.author
+      this.imageForm.authorId = data.authorId
+      this.imageForm.tags = data.tags
+    }
+    const showEditBox = ()=>{
+      this.editMode = true
+    }
+    const saveEdit = async ()=>{
+      await updateImageInfo(this.id,this.imageForm)
+      this.editMode = false
+      await this.refreshImageInfo(this.id)
+    }
+    const handleClose = (tag)=> {
+      this.imageForm.tags.splice(this.imageForm.tags.indexOf(tag), 1);
+    }
+    const showInput = ()=> {
+      this.inputVisible = true;
+      nextTick(() => {
+        this.$refs.saveTagInput.$refs.input.focus();
+      });
+    }
+    const handleInputConfirm = ()=> {
+      let inputValue = this.inputValue;
+      if (inputValue) {
+        this.imageForm.tags.push(inputValue);
+      }
+      this.inputVisible = false;
+      this.inputValue = '';
+    }
+    return {
+      deleteImageData,
     }
   },
   created() {
@@ -181,69 +250,7 @@ export default {
       this.editMode = false
     }
   },
-  methods:{
-    async jumpToSearch(authorId){
-      let routeUrl = this.$router.resolve({
-        path: "/keyWord/" + authorId
-      });
-      window.open(routeUrl .href, '_blank');
-    },
-    async collectImage(){
-      this.imageData.like = !this.imageData.like
-      await likeImage(this.id,this.imageData.like)
-      this.$emit("update")
-    },
-    async collectAuthor(){
-      await likeAuthors({
-        uid:this.imageData.authorId,
-        like:!this.imageData.authorLiked
-      })
-      await this.refreshImageInfo(this.id)
-    },
-    deleteImage(){
-      ElMessageBox.confirm("确定要删除此图片吗？").then(async _ => {
-        await deleteImage(this.id)
-        this.$emit("isDelete")
-      }).catch(_=>{
-        ElMessage.success("取消删除")
-      })
-    },
-    async refreshImageInfo(id){
-      const {data}  = await fetchImageDetail(id)
-      this.imageData = data
-      this.imageForm.pid = data.pid
-      this.imageForm.title = data.title
-      this.imageForm.author = data.author
-      this.imageForm.authorId = data.authorId
-      this.imageForm.tags = data.tags
-    },
-    showEditBox(){
-      this.editMode = true
-    },
-    async saveEdit(){
-      await updateImageInfo(this.id,this.imageForm)
-      this.editMode = false
-      await this.refreshImageInfo(this.id)
-    },
-    handleClose(tag) {
-      this.imageForm.tags.splice(this.imageForm.tags.indexOf(tag), 1);
-    },
-    showInput() {
-      this.inputVisible = true;
-      this.$nextTick(_ => {
-        this.$refs.saveTagInput.$refs.input.focus();
-      });
-    },
-    handleInputConfirm() {
-      let inputValue = this.inputValue;
-      if (inputValue) {
-        this.imageForm.tags.push(inputValue);
-      }
-      this.inputVisible = false;
-      this.inputValue = '';
-    }
-  }
-}
+})
 </script>
 
 <style scoped>

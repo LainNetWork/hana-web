@@ -7,19 +7,19 @@
     </el-button>
   </el-tooltip>
   <el-table :data="task.content">
-    <el-table-column label="任务名" prop="task_name"/>
+    <el-table-column label="任务名" prop="taskName"/>
     <el-table-column label="图片数" prop="count"/>
-    <el-table-column label="下载进度" prop="remain_count">
+    <el-table-column label="下载进度" prop="remainCount">
       <template #default="scope">
-        <el-progress :text-inside="true" :stroke-width="15" :percentage="(scope.row.count - scope.row.remain_count)*100/scope.row.count" />
+        <el-progress :text-inside="true" :stroke-width="15" :percentage="(scope.row.count - scope.row.remainCount)*100/scope.row.count" />
       </template>
     </el-table-column>
-    <el-table-column label="处理进度" prop="not_handled_count">
+    <el-table-column label="处理进度" prop="notHandledPic">
       <template #default="scope">
-        <el-progress width="50" :stroke-width="5" :percentage="Math.round((scope.row.total_pic - scope.row.not_handled_pic)*100/scope.row.total_pic)" type="circle"></el-progress>
+        <el-progress width="50" :stroke-width="5" :percentage="Math.round((scope.row.totalPic - scope.row.notHandledPic)*100/scope.row.totalPic)" type="circle"></el-progress>
       </template>
     </el-table-column>
-    <el-table-column label="创建时间" prop="create_at"/>
+    <el-table-column label="创建时间" prop="createAt"/>
     <el-table-column label="操作">
       <template #default="scope">
         <el-button type="text" @click="jumpToGallery(scope.row.id)">跳转详情</el-button>
@@ -37,44 +37,49 @@
   </el-pagination>
 </template>
 
-<script>
-import {fetchTaskList} from "../../api/task"
+<script lang="ts">
+import {fetchTaskList, TaskInfo} from "../../api/task"
 import {Refresh} from "@element-plus/icons-vue";
-export default {
+import {defineComponent, onMounted, reactive, toRefs} from "vue";
+import {useRouter} from "vue-router"
+import {PageableMO} from "../../types/common";
+
+export default defineComponent({
   name: "UpdateTask",
   components:{Refresh},
-  data(){
-    return{
+  setup(){
+    const state = reactive({
       taskForm:{
         pageSize:12,
         pageNum:1
       },
-      task:{
-        content:[],
-        total:0
-      }
-    }
-  },
-  created() {
-    this.queryTaskList()
-  },
-  methods:{
-    jumpToGallery(id){
-      let routeUrl = this.$router.resolve({
+      task:{} as PageableMO<TaskInfo>
+    })
+    const router = useRouter();
+    const jumpToGallery = (id:string)=>{
+      let routeUrl = router.resolve({
         path: "/task/" + id
       });
       window.open(routeUrl .href, '_blank');
-    },
-    changePage(val){
-      this.taskForm.pageNum = val
-      this.queryTaskList()
-    },
-    async queryTaskList(){
-      const { data } = await fetchTaskList(this.taskForm);
-      this.task = data
     }
-  }
-}
+    const changePage = (val:number)=>{
+      state.taskForm.pageNum = val
+      queryTaskList()
+    }
+    const queryTaskList = async ()=>{
+      state.task = await fetchTaskList(state.taskForm)
+    }
+    onMounted(()=>{
+      queryTaskList()
+    })
+    return{
+      ...toRefs(state),
+      jumpToGallery,
+      changePage,
+      queryTaskList,
+    }
+  },
+})
 </script>
 
 <style scoped>

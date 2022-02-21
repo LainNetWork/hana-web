@@ -5,8 +5,9 @@ export function searchPixivByPid(pid: any){
     return $http.get(`/hana/pixiv/detail/${pid}`);
 }
 
-export function fetchImagesByUid(uid: any){
-    return $http.get(`/hana/pixiv/allImages/${uid}`);
+
+export function fetchPidsByUid(uid: string):Promise<string[]>{
+    return $http.get(`/hana/pixiv/pids/${uid}`);
 }
 
 export function fetchImages(data: any){
