@@ -1,8 +1,8 @@
 # HANA图床-前端
 
-<center><h3>一个从抓图、审图、到对外提供API一条龙服务的小图床Ou<</h3></center>
+<div style="text-align: center;"><h3>一个从抓图、审图、到对外提供API一条龙服务的小图床Ou<</h3></div>
 
->技术栈 Vue 3 + Typescript + Vite + Element Plus
+>技术栈： Vue 3 + Typescript + Vite + Element Plus
 
 ### 首页
 ![img.png](.doc/img.png)
