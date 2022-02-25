@@ -105,9 +105,7 @@
           </el-table>
         </el-scrollbar>
       </el-row>
-      <el-dialog v-model="showDetailBox" width="600px">
-        <PhotoDetail :id="showDetailBoxData" v-on:isDelete="isDelete" v-on:update="fetchImageList"/>
-      </el-dialog>
+      <PhotoDetail v-model:show-detail="showDetailBox" :id="showDetailBoxId" :page-data="pictures" v-on:isDelete="isDelete" v-on:update="fetchImageList"/>
       <div style="height: 60px"></div>
       <el-pagination class="pagination-box"
                      :current-page="imageForm.pageNum"
@@ -153,7 +151,7 @@ export default defineComponent({
       } as {[key:string]:string},
       showImageDetail:false,
       showDetailBox:false,
-      showDetailBoxData:'',
+      showDetailBoxId:'',
       imageForm:{
         like:true,
         r18:false,
@@ -265,7 +263,7 @@ export default defineComponent({
       fetchImageList()
     }
     const openImageDetailBox = (id:any)=>{
-      state.showDetailBoxData = id
+      state.showDetailBoxId = id
       state.showDetailBox = true
     }
     const changePage = async (val:any) => {

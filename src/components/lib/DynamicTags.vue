@@ -1,7 +1,7 @@
 <template>
   <el-tag
-      v-for="tag in dynamicTags"
-      :key="tag"
+      v-for="(tag,index) in dynamicTags"
+      :key="index"
       class="mx-1"
       closable
       :disable-transitions="false"

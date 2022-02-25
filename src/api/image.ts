@@ -1,6 +1,5 @@
 import $http from "../config/axiosConfig";
-import {PageableMO, RespMO} from "../types/common";
-import {AxiosResponse} from "axios";
+import {PageableMO} from "../types/common";
 
 export function uploadImage(form: any){
     return $http.post("/hana/image/upload",form);
@@ -26,9 +25,7 @@ export interface ImageInfo {
     like:boolean
 }
 export async function fetchImageList(request: any): Promise<PageableMO<ImageInfo>> {
-    const promise = $http.post<any, PageableMO<ImageInfo>>("/hana/image/list", request);
-    console.log(await promise)
-    return promise
+    return $http.post<any, PageableMO<ImageInfo>>("/hana/image/list", request)
 }
 
 export interface ImageInfoUpdateForm {
