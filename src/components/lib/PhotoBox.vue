@@ -280,6 +280,7 @@ export default defineComponent({
       }
       state.indeterminate = false
       state.selectAll = false
+      state.showDetailBox = false
     }
     const keyPressSearch = async (event:any) =>{
       if (event.keyCode === 13){

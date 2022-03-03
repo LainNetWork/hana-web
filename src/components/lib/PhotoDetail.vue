@@ -1,8 +1,8 @@
 <template>
-  <el-dialog v-model="showDetail" width="90%">
-    <el-row type="flex" justify="center">
-      <el-image style="margin: 10px" lazy :src="imageData.urls.regular" fit="contain" :initial-index="currentImagePosition" :preview-src-list="cachedImageUrls" hide-on-click-modal></el-image>
-      <el-descriptions style="width: 100%" border size="small" :column="2">
+  <el-dialog v-model="showDetail" width="95%">
+    <el-space >
+      <el-image style="width: 50%" lazy :src="imageData.urls.original" fit="contain" :initial-index="currentImagePosition" :preview-src-list="cachedImageUrls" hide-on-click-modal></el-image>
+      <el-descriptions style="margin: auto" border size="small" :column="2">
         <template #extra>
           <el-button circle @click="collectImage">
             <el-icon color="#f56c6c">
@@ -26,15 +26,17 @@
             </el-icon>
           </el-button>
         </template>
-        <div v-if="!editMode">
+        <div>
           <el-descriptions-item label="图片标题:">
             <template #label>
               <p>图片标题:</p>
             </template>
-            <p>{{ imageData.title }}</p>
+            <p v-if="!editMode">{{ imageData.title }}</p>
+            <el-input v-else v-model="imageForm.title"/>
           </el-descriptions-item>
           <el-descriptions-item label="pid:">
-            <p style="white-space:nowrap">{{ imageData.pid }}</p>
+            <p v-if="!editMode" style="white-space:nowrap">{{ imageData.pid }}</p>
+            <el-input v-else v-model="imageForm.pid"/>
           </el-descriptions-item>
           <el-descriptions-item >
             <template #label>
@@ -48,14 +50,16 @@
                 图片作者:</p>
             </template>
             <div>
-              <el-button type="text" @click="jumpToSearch(imageData.author)">{{ imageData.author }}</el-button>
+              <el-button v-if="!editMode"  type="text" @click="jumpToSearch(imageData.author)">{{ imageData.author }}</el-button>
+              <el-input v-else  v-model="imageForm.author"/>
             </div>
           </el-descriptions-item>
           <el-descriptions-item >
             <template #label>
               <p style="white-space:nowrap">作者id:</p>
             </template>
-            <el-button type="text" @click="jumpToSearch(imageData.authorId)">{{ imageData.authorId }}</el-button>
+            <el-button v-if="!editMode" type="text" @click="jumpToSearch(imageData.authorId)">{{ imageData.authorId }}</el-button>
+            <el-input v-else v-model="imageForm.authorId"/>
           </el-descriptions-item>
           <el-descriptions-item >
             <template #label>
@@ -67,49 +71,18 @@
             <template #label>
               <p style="white-space:nowrap">图片标签:</p>
             </template>
-            <el-tag style="margin: 2px"
+            <el-tag v-if="!editMode" style="margin: 2px"
                     :key="tag"
                     v-for="tag in imageData.tags">
               {{ tag }}
             </el-tag>
-          </el-descriptions-item>
-        </div>
-        <div v-if="editMode">
-          <el-descriptions-item>
-            <template #label>
-              <p style="white-space:nowrap">图片标题:</p>
-            </template>
-            <el-input v-model="imageForm.title"/>
-          </el-descriptions-item>
-          <el-descriptions-item>
-            <template #label>
-              <p style="white-space:nowrap">pid:</p>
-            </template>
-            <el-input v-model="imageForm.pid"/>
-          </el-descriptions-item>
-          <el-descriptions-item>
-            <template #label>
-              <p style="white-space:nowrap">图片作者:</p>
-            </template>
-            <el-input  v-model="imageForm.author"/>
-          </el-descriptions-item>
-          <el-descriptions-item>
-            <template #label>
-              <p style="white-space:nowrap">作者id:</p>
-            </template>
-            <el-input  v-model="imageForm.authorId"/>
-          </el-descriptions-item>
-          <el-descriptions-item>
-            <template #label>
-              <p style="white-space:nowrap">图片标签:</p>
-            </template>
-            <div style="height: 100px;overflow-y: scroll">
+            <div v-else style="height: 100px;overflow-y: scroll">
               <DynamicTags v-model="imageForm.tags"></DynamicTags>
             </div>
           </el-descriptions-item>
         </div>
       </el-descriptions>
-    </el-row>
+    </el-space>
   </el-dialog>
 </template>
 
