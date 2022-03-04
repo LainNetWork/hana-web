@@ -1,36 +1,31 @@
 <template>
-  <el-dialog v-model="showDetail" width="80%" top="3vh" >
-    <el-space style="display:flex;align-items:center;justify-content:center;" :size="50">
-      <el-button>左</el-button>
+  <el-dialog :title="imageData.title" destroy-on-close center v-model="showDetail" width="80%" top="3vh" >
+    <template #footer>
+      <el-button circle @click="collectImage">
+        <el-icon color="#f56c6c">
+          <star-filled v-if="imageData.like" ></star-filled>
+          <star v-else></star>
+        </el-icon>
+      </el-button>
+      <el-button circle type="danger" @click="deleteImageData">
+        <el-icon>
+          <Delete/>
+        </el-icon>
+      </el-button>
+      <el-button circle @click="showImageData = true">
+        <el-icon>
+          <Document/>
+        </el-icon>
+      </el-button>
+    </template>
+    <el-space style="display:flex;align-items:center;justify-content:center;">
+      <el-button size="large"	:icon="ArrowLeftBold" circle @click="pre"></el-button>
       <div>
-        <el-image style="height: 800px;width: 1200px;margin: auto" lazy :src="imageData.urls.original" fit="contain" :initial-index="currentImagePosition" :preview-src-list="cachedImageUrls" hide-on-click-modal></el-image>
+        <el-image style="height: 700px;width: 1200px;margin: auto" lazy :src="imageData.urls.original" fit="contain" :preview-src-list="[imageData.urls.original]" hide-on-click-modal></el-image>
       </div>
-      <el-button>右</el-button>
-      <el-descriptions v-if="showImageData" style="margin: auto" border size="small" :column="2">
-        <template #extra>
-          <el-button circle @click="collectImage">
-            <el-icon color="#f56c6c">
-              <star-filled v-if="imageData.like" ></star-filled>
-              <star v-else></star>
-            </el-icon>
-          </el-button>
-          <el-button v-if="!editMode" circle @click="showEditBox">
-            <el-icon>
-              <Edit/>
-            </el-icon>
-          </el-button>
-          <el-button v-if="editMode" circle @click="saveEdit">
-            <el-icon>
-              <Check/>
-            </el-icon>
-          </el-button>
-          <el-button circle type="danger" @click="deleteImageData">
-            <el-icon>
-              <Delete/>
-            </el-icon>
-          </el-button>
-        </template>
-        <div>
+      <el-button size="large" :icon="ArrowRightBold" @click="next" circle></el-button>
+      <el-dialog v-model="showImageData">
+        <el-descriptions style="margin: auto" border size="small" :column="2">
           <el-descriptions-item label="图片标题:">
             <template #label>
               <p>图片标题:</p>
@@ -84,25 +79,35 @@
               <DynamicTags v-model="imageForm.tags"></DynamicTags>
             </div>
           </el-descriptions-item>
-        </div>
-      </el-descriptions>
+        </el-descriptions>
+        <el-button v-if="!editMode" circle @click="showEditBox">
+          <el-icon>
+            <Edit/>
+          </el-icon>
+        </el-button>
+        <el-button v-if="editMode" circle @click="saveEdit">
+          <el-icon>
+            <Check/>
+          </el-icon>
+        </el-button>
+      </el-dialog>
     </el-space>
   </el-dialog>
 </template>
 
 <script lang="ts" setup>
-import {updateImageInfo, fetchImageDetail, deleteImage, ImageInfo} from "../../api/image"
+import {deleteImage, fetchImageDetail, ImageInfo, updateImageInfo} from "../../api/image"
 import {likeAuthors} from "../../api/author"
 import {likeImage} from "../../api/system"
 import {ElMessage, ElMessageBox} from 'element-plus'
-import {StarFilled,Star, Edit, Check, Delete} from "@element-plus/icons-vue";
+import {ArrowLeftBold, ArrowRightBold,StarFilled,Star, Edit, Check, Delete,Document} from "@element-plus/icons-vue";
 import {onMounted, PropType, ref, watch} from "vue";
 import {useRouter} from "vue-router";
 import DynamicTags from "./DynamicTags.vue";
 
 
 const props = defineProps({
-  showDetail: {
+  show: {
     type:Boolean,
     required:true
   },
@@ -120,23 +125,31 @@ const cachedPageData  = ref(props.pageData);
 const cachedImageUrls = ref(props.pageData.map(e=>e.urls.regular))
 const showImageData = ref(false)
 
-const calCurrentImagePosition = ()=>{
-  return props.pageData.findIndex(e=>e.id === props.id)
+const calImagePosition = (id:string)=>{
+  return props.pageData.findIndex(e=>e.id === id)
 }
-const calCurrentImagePosition1 = calCurrentImagePosition();
-const currentImagePosition = ref(calCurrentImagePosition1)
-
-const emit = defineEmits(["isDelete","update","showDetail"]);
+const currentImagePosition = ref(calImagePosition(props.id))
+const showDetail =ref(false)
+const emit = defineEmits(["isDelete","update:show","update"]);
 const storageTypeMap = {
   "LOCAL": "本地存储",
   "TENXUN": "腾讯云"
 }
+onMounted(()=>{
+  showDetail.value = props.show
+})
 const imageData = ref({
+  id:'',
   authorId:'',
   urls:{
     regular:'',
     original:''
   },
+  title:'',
+  pid:'',
+  tags:[] as string[],
+  author:'',
+  storageType:'',
   authorLiked: false,
   like:false
 })
@@ -169,6 +182,11 @@ const collectAuthor = async()=>{
 }
 const showEditBox = ()=>{
   editMode.value = true
+  imageForm.value.tags = imageData.value.tags
+  imageForm.value.pid = imageData.value.pid
+  imageForm.value.title = imageData.value.title
+  imageForm.value.author = imageData.value.author
+  imageForm.value.authorId = imageData.value.authorId
 }
 const saveEdit = async ()=>{
   await updateImageInfo(props.id,imageForm.value)
@@ -183,27 +201,45 @@ const deleteImageData = ()=>{
     ElMessage.success("取消删除")
   })
 }
+
+const pre = ()=>{
+  //当前图片的index
+  let index = calImagePosition(imageData.value.id);
+  if (index <= 0) {
+    const total = props.pageData.length;
+    imageData.value = props.pageData[total - 1]
+  }else {
+    imageData.value = props.pageData[index -1]
+  }
+}
+const next = ()=>{
+  //当前图片的index
+  const total = props.pageData.length;
+  let index = calImagePosition(imageData.value.id);
+  if (index > total) {
+    imageData.value = props.pageData[0]
+  }else {
+    imageData.value = props.pageData[index + 1]
+  }
+}
 const refreshImageInfo = async (id:string)=>{
-  const data  = await fetchImageDetail(id)
-  imageData.value = data
-  imageForm.value.pid = data.pid
-  imageForm.value.title = data.title
-  imageForm.value.author = data.author
-  imageForm.value.authorId = data.authorId
-  imageForm.value.tags = data.tags
+  imageData.value = await fetchImageDetail(id)
 }
 watch(()=>props.id,(newVal:string)=>{
   refreshImageInfo(newVal)
   editMode.value = false
-  currentImagePosition.value = calCurrentImagePosition()
+  currentImagePosition.value = calImagePosition(imageData.value.id)
 })
 watch(()=>props.pageData,(newVal:ImageInfo[])=>{
   cachedPageData.value = newVal
   cachedImageUrls.value = newVal.map(e=>e.urls.regular)
-  currentImagePosition.value = calCurrentImagePosition()
+  currentImagePosition.value = calImagePosition(imageData.value.id)
 })
-watch(()=>props.showDetail,(newVal:Boolean)=>{
-  emit("showDetail",newVal)
+watch(()=>props.show,(newVal:boolean)=>{
+  showDetail.value = newVal
+})
+watch(showDetail,(newVal:boolean)=>{
+  emit("update:show",newVal)
 })
 </script>
 
