@@ -1,8 +1,12 @@
 <template>
-  <el-dialog v-model="showDetail" width="95%">
-    <el-space >
-      <el-image style="width: 50%" lazy :src="imageData.urls.original" fit="contain" :initial-index="currentImagePosition" :preview-src-list="cachedImageUrls" hide-on-click-modal></el-image>
-      <el-descriptions style="margin: auto" border size="small" :column="2">
+  <el-dialog v-model="showDetail" width="80%" top="3vh" >
+    <el-space style="display:flex;align-items:center;justify-content:center;" :size="50">
+      <el-button>左</el-button>
+      <div>
+        <el-image style="height: 800px;width: 1200px;margin: auto" lazy :src="imageData.urls.original" fit="contain" :initial-index="currentImagePosition" :preview-src-list="cachedImageUrls" hide-on-click-modal></el-image>
+      </div>
+      <el-button>右</el-button>
+      <el-descriptions v-if="showImageData" style="margin: auto" border size="small" :column="2">
         <template #extra>
           <el-button circle @click="collectImage">
             <el-icon color="#f56c6c">
@@ -114,6 +118,7 @@ const props = defineProps({
 
 const cachedPageData  = ref(props.pageData);
 const cachedImageUrls = ref(props.pageData.map(e=>e.urls.regular))
+const showImageData = ref(false)
 
 const calCurrentImagePosition = ()=>{
   return props.pageData.findIndex(e=>e.id === props.id)

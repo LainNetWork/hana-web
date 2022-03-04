@@ -355,7 +355,7 @@ export default defineComponent({
 }
 
 .pagination-box{
-  z-index: 2040;
+  z-index: 1000;
   height:50px;
   width: 100%;
   position:absolute;
