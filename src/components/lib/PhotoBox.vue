@@ -105,7 +105,7 @@
           </el-table>
         </el-scrollbar>
       </el-row>
-      <PhotoDetail v-model:show="showDetailBox" :id="showDetailBoxId" :page-data="pictures" v-on:isDelete="isDelete" v-on:update="fetchImageList"/>
+      <PhotoDetail v-model:show="showDetailBox" :id="showDetailBoxId" :page-data="pictures" v-on:isDelete="isDelete" v-on:close="fetchImageList"/>
       <div style="height: 60px"></div>
       <el-pagination class="pagination-box"
                      :current-page="imageForm.pageNum"

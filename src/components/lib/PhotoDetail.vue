@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="imageData.title" destroy-on-close center v-model="showDetail" width="80%" top="3vh" >
+  <el-dialog :title="imageData.title" @before-close="closeDialog" destroy-on-close center v-model="showDetail" width="80%" top="3vh" >
     <template #footer>
       <el-button circle @click="collectImage">
         <el-icon color="#f56c6c">
@@ -130,7 +130,7 @@ const calImagePosition = (id:string)=>{
 }
 const currentImagePosition = ref(calImagePosition(props.id))
 const showDetail =ref(false)
-const emit = defineEmits(["isDelete","update:show","update"]);
+const emit = defineEmits(["isDelete","update:show","close"]);
 const storageTypeMap = {
   "LOCAL": "本地存储",
   "TENXUN": "腾讯云"
@@ -171,7 +171,6 @@ const jumpToSearch = async (authorId:string)=>{
 const collectImage = async ()=>{
   imageData.value.like = !imageData.value.like
   await likeImage(props.id,imageData.value.like)
-  emit("update")
 }
 const collectAuthor = async()=>{
   await likeAuthors({
@@ -193,6 +192,9 @@ const saveEdit = async ()=>{
   editMode.value = false
   await refreshImageInfo(props.id)
 }
+const closeDialog = ()=> {
+  emit("close")
+}
 const deleteImageData = ()=>{
   ElMessageBox.confirm("确定要删除此图片吗？").then(async _ => {
     await deleteImage(props.id)
@@ -206,8 +208,7 @@ const pre = ()=>{
   //当前图片的index
   let index = calImagePosition(imageData.value.id);
   if (index <= 0) {
-    const total = props.pageData.length;
-    imageData.value = props.pageData[total - 1]
+    imageData.value = props.pageData[props.pageData.length - 1]
   }else {
     imageData.value = props.pageData[index -1]
   }
@@ -216,7 +217,8 @@ const next = ()=>{
   //当前图片的index
   const total = props.pageData.length;
   let index = calImagePosition(imageData.value.id);
-  if (index > total) {
+  console.log(total,index)
+  if (index >= total - 1) {
     imageData.value = props.pageData[0]
   }else {
     imageData.value = props.pageData[index + 1]
