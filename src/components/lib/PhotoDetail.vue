@@ -1,15 +1,11 @@
 <template>
   <el-dialog :title="imageData.title" @before-close="closeDialog" destroy-on-close center v-model="showDetail" width="80%" top="3vh" >
     <template #footer>
+      <el-button size="large"	:icon="ArrowLeftBold" circle @click="pre"></el-button>
       <el-button circle @click="collectImage">
         <el-icon color="#f56c6c">
           <star-filled v-if="imageData.like" ></star-filled>
           <star v-else></star>
-        </el-icon>
-      </el-button>
-      <el-button circle type="danger" @click="deleteImageData">
-        <el-icon>
-          <Delete/>
         </el-icon>
       </el-button>
       <el-button circle @click="showImageData = true">
@@ -17,81 +13,83 @@
           <Document/>
         </el-icon>
       </el-button>
-    </template>
-    <el-space style="display:flex;align-items:center;justify-content:center;">
-      <el-button size="large"	:icon="ArrowLeftBold" circle @click="pre"></el-button>
-      <div>
-        <el-image style="height: 700px;width: 1200px;margin: auto" lazy :src="imageData.urls.original" fit="contain" :preview-src-list="[imageData.urls.original]" hide-on-click-modal></el-image>
-      </div>
+      <el-button circle type="danger" @click="deleteImageData">
+        <el-icon>
+          <Delete/>
+        </el-icon>
+      </el-button>
       <el-button size="large" :icon="ArrowRightBold" @click="next" circle></el-button>
-      <el-dialog v-model="showImageData">
-        <el-descriptions style="margin: auto" border size="small" :column="2">
-          <el-descriptions-item label="图片标题:">
-            <template #label>
-              <p>图片标题:</p>
-            </template>
-            <p v-if="!editMode">{{ imageData.title }}</p>
-            <el-input v-else v-model="imageForm.title"/>
-          </el-descriptions-item>
-          <el-descriptions-item label="pid:">
-            <p v-if="!editMode" style="white-space:nowrap">{{ imageData.pid }}</p>
-            <el-input v-else v-model="imageForm.pid"/>
-          </el-descriptions-item>
-          <el-descriptions-item >
-            <template #label>
-              <p style="white-space:nowrap">
-                <el-button type="text" style="display: inline-block;padding: 0" circle @click="collectAuthor">
-                  <el-icon size="22" color="red">
-                    <star-filled v-if="imageData.authorLiked" ></star-filled>
-                    <star v-else></star>
-                  </el-icon>
-                </el-button>
-                图片作者:</p>
-            </template>
-            <div>
-              <el-button v-if="!editMode"  type="text" @click="jumpToSearch(imageData.author)">{{ imageData.author }}</el-button>
-              <el-input v-else  v-model="imageForm.author"/>
-            </div>
-          </el-descriptions-item>
-          <el-descriptions-item >
-            <template #label>
-              <p style="white-space:nowrap">作者id:</p>
-            </template>
-            <el-button v-if="!editMode" type="text" @click="jumpToSearch(imageData.authorId)">{{ imageData.authorId }}</el-button>
-            <el-input v-else v-model="imageForm.authorId"/>
-          </el-descriptions-item>
-          <el-descriptions-item >
-            <template #label>
-              <p style="white-space:nowrap">存储方式:</p>
-            </template>
-            <p style="white-space:nowrap">{{ storageTypeMap[imageData.storageType] }}</p>
-          </el-descriptions-item>
-          <el-descriptions-item>
-            <template #label>
-              <p style="white-space:nowrap">图片标签:</p>
-            </template>
-            <el-tag v-if="!editMode" style="margin: 2px"
-                    :key="tag"
-                    v-for="tag in imageData.tags">
-              {{ tag }}
-            </el-tag>
-            <div v-else style="height: 100px;overflow-y: scroll">
-              <DynamicTags v-model="imageForm.tags"></DynamicTags>
-            </div>
-          </el-descriptions-item>
-        </el-descriptions>
-        <el-button v-if="!editMode" circle @click="showEditBox">
-          <el-icon>
-            <Edit/>
-          </el-icon>
-        </el-button>
-        <el-button v-if="editMode" circle @click="saveEdit">
-          <el-icon>
-            <Check/>
-          </el-icon>
-        </el-button>
-      </el-dialog>
-    </el-space>
+    </template>
+
+    <el-image style="height: 700px;width: 100%" lazy :src="imageData.urls.original" fit="contain" :preview-src-list="[imageData.urls.original]" hide-on-click-modal></el-image>
+
+    <el-dialog v-model="showImageData">
+      <el-descriptions style="margin: auto" border size="small" :column="2">
+        <el-descriptions-item label="图片标题:">
+          <template #label>
+            <p>图片标题:</p>
+          </template>
+          <p v-if="!editMode">{{ imageData.title }}</p>
+          <el-input v-else v-model="imageForm.title"/>
+        </el-descriptions-item>
+        <el-descriptions-item label="pid:">
+          <p v-if="!editMode" style="white-space:nowrap">{{ imageData.pid }}</p>
+          <el-input v-else v-model="imageForm.pid"/>
+        </el-descriptions-item>
+        <el-descriptions-item >
+          <template #label>
+            <p style="white-space:nowrap">
+              <el-button type="text" style="display: inline-block;padding: 0" circle @click="collectAuthor">
+                <el-icon size="22" color="red">
+                  <star-filled v-if="imageData.authorLiked" ></star-filled>
+                  <star v-else></star>
+                </el-icon>
+              </el-button>
+              图片作者:</p>
+          </template>
+          <div>
+            <el-button v-if="!editMode"  type="text" @click="jumpToSearch(imageData.author)">{{ imageData.author }}</el-button>
+            <el-input v-else  v-model="imageForm.author"/>
+          </div>
+        </el-descriptions-item>
+        <el-descriptions-item >
+          <template #label>
+            <p style="white-space:nowrap">作者id:</p>
+          </template>
+          <el-button v-if="!editMode" type="text" @click="jumpToSearch(imageData.authorId)">{{ imageData.authorId }}</el-button>
+          <el-input v-else v-model="imageForm.authorId"/>
+        </el-descriptions-item>
+        <el-descriptions-item >
+          <template #label>
+            <p style="white-space:nowrap">存储方式:</p>
+          </template>
+          <p style="white-space:nowrap">{{ storageTypeMap[imageData.storageType] }}</p>
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <p style="white-space:nowrap">图片标签:</p>
+          </template>
+          <el-tag v-if="!editMode" style="margin: 2px"
+                  :key="tag"
+                  v-for="tag in imageData.tags">
+            {{ tag }}
+          </el-tag>
+          <div v-else style="height: 100px;overflow-y: scroll">
+            <DynamicTags v-model="imageForm.tags"></DynamicTags>
+          </div>
+        </el-descriptions-item>
+      </el-descriptions>
+      <el-button v-if="!editMode" circle @click="showEditBox">
+        <el-icon>
+          <Edit/>
+        </el-icon>
+      </el-button>
+      <el-button v-if="editMode" circle @click="saveEdit">
+        <el-icon>
+          <Check/>
+        </el-icon>
+      </el-button>
+    </el-dialog>
   </el-dialog>
 </template>
 

@@ -291,6 +291,9 @@ export default defineComponent({
       return state.storageTypeMap[row.storageType]
     }
     onMounted(()=>{
+      if (props.taskId){
+        state.imageForm.like = false
+      }
       fetchImageList()
     })
     watch(()=>props.keyWord,(newVal)=>{
